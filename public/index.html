@@ -2,16 +2,20 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Lego Network Analyzer</title>
+    <title>Login</title>
 </head>
 <body>
-    <h1>Lego Network Analyzer</h1>
-    <video id="video" autoplay playsinline width="640" height="480"></video>
-    <canvas id="capture" style="display:none;"></canvas>
-    <div>
-        <button id="captureBtn">Capture</button>
-    </div>
-    <pre id="result"></pre>
-    <script src="/bundle.js"></script>
+    <h1>Portal Login</h1>
+    <form id="loginForm">
+        <div>
+            <label>Email: <input id="email" type="email" required></label>
+        </div>
+        <div>
+            <label>Password: <input id="password" type="password" required></label>
+        </div>
+        <button type="submit">Login</button>
+    </form>
+    <p id="message"></p>
+    <script src="/login.bundle.js"></script>
 </body>
 </html>
