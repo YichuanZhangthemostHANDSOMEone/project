@@ -9,8 +9,9 @@ yarn-error.log*
 .pnp.js
 
 .vscode/*
+.idea/
 
 dist
+
 public/bundle.js
 .env
-
