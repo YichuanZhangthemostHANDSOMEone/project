@@ -13,4 +13,5 @@ yarn-error.log*
 
 dist
 
+public/bundle.js
 .env
