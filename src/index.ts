@@ -16,9 +16,14 @@
 //   });
 // });
 import { VisionApp } from '@modules/vision';
+import './styles.css';
 import { bindButton, showMessage } from '@modules/ui';
 import './styles.css';
-
+console.log('🚀 DOMContentLoaded 触发');
+window.addEventListener('DOMContentLoaded', async () => {
+  console.log('页面初始化开始');
+  // ...
+});
 window.addEventListener('DOMContentLoaded', async () => {
   const video      = document.getElementById('video')       as HTMLVideoElement;
   const canvas     = document.getElementById('capture')     as HTMLCanvasElement;
@@ -34,9 +39,9 @@ window.addEventListener('DOMContentLoaded', async () => {
     showMessage('Check console for results');
   });
 
+  // src/index.ts
   bindButton(quizBtn, () => {
-    // 这里可以跳到你的 quiz 页面，或者弹出一个模态框
-    window.location.href = '/quiz.html';
+    window.location.href = '/topics.html';
   });
 });
 

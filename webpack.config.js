@@ -10,45 +10,35 @@ const envKeys = Object.keys(env).reduce((prev, next) => {
 
 module.exports = {
     mode: 'development',
-    entry: './src/index.ts',
+    entry: {
+        main: './src/index.ts',      // AR 页面
+        quiz: './src/quiz.ts',       // Quiz 逻辑
+        result: './src/result.ts'    // 结果页面逻辑
+    },
     output: {
-        filename: 'bundle.js',
+        filename: '[name].bundle.js',
         path: path.resolve(__dirname, 'dist'),
         publicPath: '/'
     },
     resolve: {
         extensions: ['.ts', '.js'],
-        alias: {
-            '@modules': path.resolve(__dirname, 'src/modules/')
-        }
+        alias: { '@modules': path.resolve(__dirname, 'src/modules') },
+        fallback: { process: require.resolve('process/browser') }
     },
     module: {
         rules: [
-            {
-                test: /\.ts$/,
-                use: 'ts-loader',
-                exclude: /node_modules/
-            },
-            {
-                test: /\.css$/i,
-                use: ['style-loader', 'css-loader']
-            },
-            {
-                test: /\.(png|jpe?g|gif)$/i,
-                type: 'asset/resource'
-            }
+            { test: /\.ts$/, use: 'ts-loader', exclude: /node_modules/ },
+            { test: /\.css$/i, use: ['style-loader','css-loader'] },
+            { test: /\.(png|jpe?g|gif)$/i, type: 'asset/resource' }
         ]
     },
     plugins: [
-        new webpack.DefinePlugin(envKeys)
+        new webpack.DefinePlugin(envKeys),
+        new webpack.ProvidePlugin({ process: 'process/browser' })
     ],
-    devtool: 'source-map',
     devServer: {
-        static: {
-            directory: path.join(__dirname, 'public')
-        },
+        static: path.join(__dirname, 'public'),
         historyApiFallback: true,
-        compress: true,
         port: 8080,
         open: true
     }

@@ -14,8 +14,14 @@ export class VisionApp {
   }
 
   async start() {
-    await this.camera.start();
-    await this.segmenter.init();
+    try {
+      console.log('📷 准备打开摄像头');
+      await this.camera.start();
+      console.log('📷 摄像头已启动');
+      await this.segmenter.init();
+    } catch (e) {
+      console.error('打开摄像头出错:', e);
+    }
   }
 
   async analyze() {
