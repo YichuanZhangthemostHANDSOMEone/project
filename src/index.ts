@@ -39,3 +39,4 @@ window.addEventListener('DOMContentLoaded', async () => {
     window.location.href = '/quiz.html';
   });
 });
+
