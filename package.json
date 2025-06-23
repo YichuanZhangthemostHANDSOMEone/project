@@ -6,7 +6,8 @@
   "scripts": {
     "tsc:build": "tsc",
     "start": "webpack serve --mode development",
-    "build": "webpack --mode production"
+    "build": "webpack --mode production",
+    "postbuild": "node scripts/copy-bundle.js"
   },
   "devDependencies": {
     "css-loader": "^7.1.2",
