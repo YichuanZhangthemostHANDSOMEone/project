@@ -10,11 +10,17 @@ export class LegoSegmenter {
   async init() {
     try {
       const vision = await FilesetResolver.forVisionTasks(
-        'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision/wasm'
+          'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision/wasm'
       );
-      this.segmenter = await ImageSegmenter.createFromModelPath(
-        vision,
-        MODEL_URL
+
+      this.segmenter = await ImageSegmenter.createFromOptions(
+          vision,
+          {
+            baseOptions: { modelAssetPath: MODEL_URL },
+            runningMode: 'IMAGE',
+            outputCategoryMask: true,          // 需要分类掩码
+            outputConfidenceMasks: false
+          }
       );
     } catch (err) {
       showMessage('Failed to load segmentation model');

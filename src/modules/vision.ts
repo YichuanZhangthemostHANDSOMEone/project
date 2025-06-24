@@ -12,7 +12,16 @@
 //     this.segmenter = new LegoSegmenter();
 //     this.capturingCanvas = canvas;
 //   }
-//
+
+//   async init() {
+//     try {
+//       console.log('🔄 初始化视觉模块');
+//       await this.segmenter.init();
+//     } catch (e) {
+//       console.error('初始化视觉模块失败:', e);
+//     }
+//   }
+
 //   async start() {
 //     try {
 //       console.log('📷 准备打开摄像头');
@@ -23,7 +32,7 @@
 //       console.error('打开摄像头出错:', e);
 //     }
 //   }
-//
+
 //   // async analyze() {
 //   //   // 1. 拍照
 //   //   const ctx = this.camera.capture(this.capturingCanvas);
@@ -133,6 +142,7 @@
 import { Camera } from '@modules/camera';
 import { LegoSegmenter } from '@modules/segmentation';
 import { prominent } from 'color.js';
+import {showLoadingIndicator} from "@modules/ui";
 
 export class VisionApp {
   private camera: Camera;
@@ -143,6 +153,16 @@ export class VisionApp {
     this.camera = new Camera(video);
     this.segmenter = new LegoSegmenter();
     this.capturingCanvas = canvas;
+  }
+
+  async init() {
+    showLoadingIndicator(true);
+    try {
+      console.log('🔄 初始化视觉模块');
+      await this.segmenter.init();
+    } finally {
+      showLoadingIndicator(false);
+    }
   }
 
   async start() {
@@ -167,29 +187,18 @@ export class VisionApp {
       return;
     }
 
-    // 先打印一下，看看 runtime 上它到底长哪些字段
     console.log('🔍 categoryMask:', result.categoryMask);
 
     // 3. 尝试取原始掩码字节
     const mask = result.categoryMask;
-    // TS 接口上没有 data/buffer/getBuffer，这里 cast to any
-    const anyMask = mask as any;
-    let raw: Uint8ClampedArray;
-
-    if (anyMask.data instanceof Uint8ClampedArray) {
-      raw = anyMask.data;
-    } else if (anyMask.buffer instanceof ArrayBuffer) {
-      raw = new Uint8ClampedArray(anyMask.buffer);
-    } else if (typeof anyMask.getBuffer === 'function') {
-      raw = new Uint8ClampedArray(anyMask.getBuffer());
-    } else {
-      throw new Error('无法读取 segmentation mask 的原始数据');
-    }
+    const rawUint8: Uint8Array = mask.getAsUint8Array();
+// 如果你需要 Uint8ClampedArray，可以这样转换
+    const raw: Uint8ClampedArray = new Uint8ClampedArray(rawUint8.buffer);
 
     const w = mask.width;
     const h = mask.height;
 
-    // 4. 构造 RGBA 半透明红色掩码
+// 4. 构造 RGBA 半透明红色掩码
     const rgba = new Uint8ClampedArray(w * h * 4);
     for (let i = 0, j = 0; i < raw.length; i++, j += 4) {
       if (raw[i] > 0) {
@@ -198,6 +207,9 @@ export class VisionApp {
         rgba[j+2] =   0;  // B
         rgba[j+3] = 128;  // A
       } else {
+        rgba[j  ] = 0;
+        rgba[j+1] = 0;
+        rgba[j+2] = 0;
         rgba[j+3] = 0;    // 完全透明
       }
     }
