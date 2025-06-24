@@ -25,12 +25,14 @@ window.addEventListener('DOMContentLoaded', async () => {
   // ...
 });
 window.addEventListener('DOMContentLoaded', async () => {
-  const video      = document.getElementById('video')       as HTMLVideoElement;
-  const canvas     = document.getElementById('capture')     as HTMLCanvasElement;
-  const captureBtn = document.getElementById('captureBtn')  as HTMLButtonElement;
-  const quizBtn    = document.getElementById('quizBtn')     as HTMLButtonElement;
+  const video      = document.getElementById('video')   as HTMLVideoElement;
+  const capture    = document.getElementById('capture') as HTMLCanvasElement;
+  const overlay    = document.getElementById('overlay') as HTMLCanvasElement;
+  const captureBtn = document.getElementById('captureBtn') as HTMLButtonElement;
+  const quizBtn    = document.getElementById('quizBtn')    as HTMLButtonElement;
+  const app = new VisionApp(video, capture);
 
-  const app = new VisionApp(video, canvas);
+  // const app = new VisionApp(video, canvas);
   await app.start();
   showMessage('Camera ready. Click capture to analyze.');
 
@@ -43,5 +45,12 @@ window.addEventListener('DOMContentLoaded', async () => {
   bindButton(quizBtn, () => {
     window.location.href = '/topics.html';
   });
+  const quizPrompt = document.querySelector('.quiz-prompt') as HTMLElement;
+  if (quizPrompt) {
+    quizPrompt.style.cursor = 'pointer';    // 小手型提示
+    quizPrompt.addEventListener('click', () => {
+      window.location.href = '/topics.html';
+    });
+  }
 });
 

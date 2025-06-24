@@ -20,7 +20,9 @@
 <head>
     <meta charset="UTF-8" />
     <title>Lego Network Analyzer</title>
-
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
 <!-- 顶部导航 -->
@@ -48,22 +50,61 @@
         <!-- 第一屏：AR 扫描 -->
         <section class="ar-section">
             <h1 class="screen-title">Lego Network Analyzer</h1>
-            <video id="video" autoplay playsinline></video>
-            <canvas id="capture" style="display:none;"></canvas>
+
+            <div id="ar-container" style="position:relative; max-width:640px; margin:0 auto;">
+                <!-- ① 视频流 -->
+                <video id="video" autoplay playsinline style="width:100%; display:block;"></video>
+
+                <!-- ② 隐藏的 capture canvas，一定要有 id="capture" -->
+                <canvas id="capture" style="display:none;"></canvas>
+
+                <!-- ③ 可见的 overlay canvas，用于画分割遮罩 -->
+                <canvas
+                        id="overlay"
+                        style="
+      position:absolute;
+      top:0; left:0;
+      width:100%;
+      height:auto;
+      pointer-events:none;
+    "
+                ></canvas>
+
+                <!-- ④ Top Step 提示 -->
+                <div id="step-indicator" style="
+      position:absolute; top:8px; left:50%;
+      transform:translateX(-50%);
+      background:rgba(0,0,0,0.6); color:#fff; padding:4px 8px;
+      border-radius:4px; font-size:0.85rem;
+    ">Step 1 / 4</div>
+
+                <!-- ⑤ Packet UI -->
+                <div id="packet-ui" style="
+      position:absolute; bottom:12px; left:50%;
+      transform:translateX(-50%);
+      width:95%; background:rgba(255,255,255,0.9);
+      border-radius:6px; padding:6px;
+      display:flex; flex-direction:column; gap:4px;
+      font-size:0.8rem;
+    ">
+                    <div id="packet-info">Selected component: …</div>
+                    <div id="packet-bar" style="display:flex; height:12px; overflow:hidden; border-radius:4px;"></div>
+                    <div id="controls" style="align-self:flex-end; display:flex; gap:8px;">
+                        <button id="ar-btn">📦</button>
+                        <button id="pause-btn">⏸️</button>
+                    </div>
+                </div>
+            </div>
+
             <div class="btn-group">
-                <button id="captureBtn" class="btn"><span class="icon">📸</span> Capture</button>
-                <button id="quizBtn"    class="btn"><span class="icon">▶️</span> Quiz</button>
+                <button id="captureBtn" class="btn">📸 Capture</button>
+                <button id="quizBtn"    class="btn">▶️ Quiz</button>
             </div>
             <pre id="result"></pre>
         </section>
 
         <!-- 第二屏：下方信息 -->
         <section class="info-section">
-            <p>
-                The OSI model is a conceptual framework, also known as a reference model,
-                that describes how network communication functions by dividing them
-                into seven abstract layers.
-            </p>
             <p class="quiz-prompt">QUIZ PLEASE CLICK ▶️</p>
         </section>
     </main>
