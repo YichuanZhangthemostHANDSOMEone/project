@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><title>Quiz</title><</head>
+<body>
+<header class="topbar">…</header>
+<div class="layout">
+  <aside class="sidebar">…</aside>
+  <main class="main-content">
+    <section class="quiz-section">
+      <div class="question-card">
+        <!-- 题目文本由脚本填充 -->
+        <h2 id="prompt"></h2>
+      </div>
+      <div class="options">
+        <!-- 4 个按钮 -->
+        <button class="option-btn" data-index="0"></button>
+        <button class="option-btn" data-index="1"></button>
+        <button class="option-btn" data-index="2"></button>
+        <button class="option-btn" data-index="3"></button>
+      </div>
+      <div class="sidebar-info">
+        <div class="model-card">…</div>
+        <div class="progress-card">
+          <span class="timer-icon">⌛</span>
+          <div class="progress-bar"><div class="progress"></div></div>
+          <div id="counter">1 / 5</div>
+          <div class="nav-arrows">
+            <button id="prevBtn">←</button>
+            <button id="nextBtn">→</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+<script src="/quiz.bundle.js"></script>
+</body>
+</html>
