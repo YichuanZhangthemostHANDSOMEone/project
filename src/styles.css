@@ -301,3 +301,126 @@ pre#result {
 .quiz-prompt:hover {
   color: var(--color-secondary);
 }
+/*----------------------------------------
+  Quiz 页面美化样式
+----------------------------------------*/
+.quiz-section {
+  max-width: 600px;
+  margin: 2rem auto;
+}
+.question-card {
+  background: var(--color-surface);
+  padding: 1.5rem;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-md);
+  margin-bottom: 1.5rem;
+}
+.question-card h2 {
+  font-size: 1.25rem;
+  color: var(--color-primary);
+  text-align: center;
+}
+.options {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+.option-btn {
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-bg);
+  cursor: pointer;
+  font-weight: 500;
+  transition: background 0.2s, border-color 0.2s;
+}
+.option-btn:hover:not(:disabled) {
+  background: var(--color-surface);
+  border-color: var(--color-primary);
+}
+.option-btn.selected {
+  background: var(--color-primary);
+  color: #fff;
+  border-color: var(--color-primary);
+}
+.option-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.progress-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+.progress-bar {
+  flex: 1;
+  height: 8px;
+  background: var(--color-border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.progress {
+  height: 100%;
+  background: var(--color-primary);
+  width: 0%;
+  transition: width 0.3s;
+}
+#counter {
+  min-width: 3.5rem;
+  text-align: center;
+  font-weight: 600;
+}
+.nav-arrows {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+.nav-arrows .btn {
+  padding: 0.5rem 1.25rem;
+}
+/*----------------------------------------
+  Topics 页面美化样式
+----------------------------------------*/
+.topics {
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 1rem;
+  background: var(--color-surface);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-md);
+}
+.topics-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--color-primary);
+  margin-bottom: 1rem;
+  text-align: center;
+}
+.week-list {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+}
+.week-list li {
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  transition: background 0.2s, border-color 0.2s;
+}
+.week-list li:hover {
+  background: var(--color-surface);
+  border-color: var(--color-primary);
+}
+.week-list a {
+  display: block;
+  padding: 0.75rem 1rem;
+  text-decoration: none;
+  color: var(--color-text);
+  font-weight: 500;
+}
+.week-list a:hover {
+  color: var(--color-primary);
+}
