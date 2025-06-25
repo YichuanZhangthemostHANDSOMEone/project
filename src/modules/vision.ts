@@ -141,17 +141,20 @@
 
 import { Camera } from '@modules/camera';
 import { LegoSegmenter } from '@modules/segmentation';
+import { BoardRectifier } from '@modules/rectify';
 import { prominent } from 'color.js';
 import {showLoadingIndicator} from "@modules/ui";
 
 export class VisionApp {
   private camera: Camera;
   private segmenter: LegoSegmenter;
+  private rectifier: BoardRectifier;
   private capturingCanvas: HTMLCanvasElement;
 
   constructor(private video: HTMLVideoElement, canvas: HTMLCanvasElement) {
     this.camera = new Camera(video);
     this.segmenter = new LegoSegmenter();
+    this.rectifier = new BoardRectifier();
     this.capturingCanvas = canvas;
   }
 
@@ -177,77 +180,77 @@ export class VisionApp {
   }
 
   async analyze() {
-    // 1. 拍照
-    this.camera.capture(this.capturingCanvas);
+  // 1. 拍照
+  this.camera.capture(this.capturingCanvas);
 
-    // 2. 分割
-    const result = await this.segmenter.segment(this.capturingCanvas);
-    if (!result?.categoryMask) {
-      console.warn('No segmentation mask returned');
-      return;
-    }
-
-    console.log('🔍 categoryMask:', result.categoryMask);
-
-    // 3. 尝试取原始掩码字节
-    const mask = result.categoryMask;
-    const rawUint8: Uint8Array = mask.getAsUint8Array();
-// 如果你需要 Uint8ClampedArray，可以这样转换
-    const raw: Uint8ClampedArray = new Uint8ClampedArray(rawUint8.buffer);
-
-    const w = mask.width;
-    const h = mask.height;
-
-// 4. 构造 RGBA 半透明红色掩码
-    const rgba = new Uint8ClampedArray(w * h * 4);
-    for (let i = 0, j = 0; i < raw.length; i++, j += 4) {
-      if (raw[i] > 0) {
-        rgba[j  ] = 255;  // R
-        rgba[j+1] =   0;  // G
-        rgba[j+2] =   0;  // B
-        rgba[j+3] = 128;  // A
-      } else {
-        rgba[j  ] = 0;
-        rgba[j+1] = 0;
-        rgba[j+2] = 0;
-        rgba[j+3] = 0;    // 完全透明
-      }
-    }
-    const imgData = new ImageData(rgba, w, h);
-
-    // 5. 临时画布放掩码，再绘制到 overlay
-    const tmp = document.createElement('canvas');
-    tmp.width  = w;
-    tmp.height = h;
-    tmp.getContext('2d')!.putImageData(imgData, 0, 0);
-
-    const overlay = document.getElementById('overlay') as HTMLCanvasElement;
-    overlay.width  = this.capturingCanvas.width;
-    overlay.height = this.capturingCanvas.height;
-    const octx = overlay.getContext('2d')!;
-    octx.clearRect(0, 0, overlay.width, overlay.height);
-
-    octx.globalAlpha = 0.4;
-    octx.drawImage(tmp, 0, 0, overlay.width, overlay.height);
-    octx.globalAlpha = 1;
-
-    // 6. 更新顶部 Step 文本
-    const stepEl = document.getElementById('step-indicator');
-    if (stepEl) stepEl.textContent = 'Segmentation complete';
-
-    // 7. （示例）主色提取
+  // 2. 可选透视矫正
+  let canvasForSeg = this.capturingCanvas;
+  if (this.rectifier) {
     try {
-      const dataUrl = this.capturingCanvas.toDataURL();
-      const color = await prominent(dataUrl, { amount: 1 });
-      console.log('Dominant color:', color);
+      const rectified = await this.rectifier.rectify(this.capturingCanvas);
+      if (rectified) {
+        canvasForSeg = rectified;
+      }
     } catch (e) {
-      console.error('Color extraction failed:', e);
+      console.warn('Rectification failed, using original canvas', e);
     }
+  }
 
-    // 8. （示例）底部信息栏
-    const infoEl = document.getElementById('packet-info');
-    if (infoEl) {
-      infoEl.textContent = `Mask: ${w}×${h} px`;
+  // 3. 分割
+  const result = await this.segmenter.segment(canvasForSeg);
+  if (!result?.categoryMask) {
+    console.warn('No segmentation mask returned');
+    return;
+  }
+  console.log('Segmentation result:', result);
+
+  // 4. 从 categoryMask 构造半透明红色 RGBA 掩码
+  const mask = result.categoryMask;
+  const rawUint8 = mask.getAsUint8Array();
+  const raw = new Uint8ClampedArray(rawUint8.buffer);
+  const w = mask.width, h = mask.height;
+  const rgba = new Uint8ClampedArray(w * h * 4);
+
+  for (let i = 0, j = 0; i < raw.length; i++, j += 4) {
+    if (raw[i] > 0) {
+      rgba[j]   = 255;  // R
+      rgba[j+1] =   0;  // G
+      rgba[j+2] =   0;  // B
+      rgba[j+3] = 128;  // A
+    } else {
+      rgba[j]   = 0;
+      rgba[j+1] = 0;
+      rgba[j+2] = 0;
+      rgba[j+3] = 0;    // 完全透明
     }
+  }
+
+  // 5. 在临时 Canvas 上绘制掩码，然后 overlay 到屏幕上
+  const tmp = document.createElement('canvas');
+  tmp.width = w;
+  tmp.height = h;
+  tmp.getContext('2d')!.putImageData(new ImageData(rgba, w, h), 0, 0);
+
+  const overlay = document.getElementById('overlay') as HTMLCanvasElement;
+  overlay.width  = this.capturingCanvas.width;
+  overlay.height = this.capturingCanvas.height;
+  const octx = overlay.getContext('2d')!;
+  octx.clearRect(0, 0, overlay.width, overlay.height);
+  octx.globalAlpha = 0.4;
+  octx.drawImage(tmp, 0, 0, overlay.width, overlay.height);
+  octx.globalAlpha = 1;
+
+  // 6. 更新 UI 文本
+  document.getElementById('step-indicator')?.textContent = 'Segmentation complete';
+  document.getElementById('packet-info')!.textContent = `Mask: ${w}×${h} px`;
+
+  // 7. （可选）主色提取示例
+  try {
+    // 这里用 canvasForSeg 的 dataURL，也可以直接传 ImageData
+    const dataUrl = canvasForSeg.toDataURL();
+    const color = await prominent(dataUrl, { amount: 1 });
+    console.log('Dominant color:', color);
+  } catch (e) {
+    console.error('Color extraction failed:', e);
   }
 }
