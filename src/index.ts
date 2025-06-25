@@ -11,7 +11,11 @@ window.addEventListener('DOMContentLoaded', async () => {
   await app.start();
   showMessage('Camera ready. Click capture to analyze.');
   bindButton(button, async () => {
-    await app.analyze();
-    showMessage('Check console for results');
+    const colorName = await app.analyze();
+    if (colorName) {
+      showMessage(`Closest Lego color: ${colorName}`);
+    } else {
+      showMessage('Analysis failed');
+    }
   });
 });
