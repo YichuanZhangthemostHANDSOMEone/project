@@ -1,4 +1,3 @@
-
 import { VisionApp } from '@modules/vision';
 import './styles.css';
 import { bindButton, showMessage } from '@modules/ui';
@@ -23,16 +22,11 @@ window.addEventListener('DOMContentLoaded', async () => {
   bindButton(captureBtn, async () => {
     await app.analyze();
     showMessage('Check console for results');
-    // 自动滚动到结果区
-        document
-      .getElementById('result')!
-     .scrollIntoView({ behavior: 'smooth', block: 'start' });
-
+  });
 
   // src/index.ts
   bindButton(quizBtn, () => {
     window.location.href = '/topics.html';
-
   });
   const quizPrompt = document.querySelector('.quiz-prompt') as HTMLElement;
   if (quizPrompt) {
@@ -42,4 +36,3 @@ window.addEventListener('DOMContentLoaded', async () => {
     });
   }
 });
-

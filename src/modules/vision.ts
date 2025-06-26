@@ -97,7 +97,10 @@ export class VisionApp {
       octx.globalAlpha = 1;
 
       // 5. 更新 UI 文本
-      document.getElementById('step-indicator')?.textContent = 'Segmentation complete';
+      const stepIndicator = document.getElementById('step-indicator');
+      if (stepIndicator) {
+        stepIndicator.textContent = 'Segmentation complete';
+      }
       document.getElementById('packet-info')!.textContent = `Mask: ${w}×${h} px`;
 
       // 6. 乐高色彩分析
