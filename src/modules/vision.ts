@@ -2,6 +2,7 @@ import { Camera } from '@modules/camera';
 import { LegoSegmenter } from '@modules/segmentation';
 import { BoardRectifier } from '@modules/rectify';
 import { prominent } from 'color.js';
+import { analyzeImageData } from '@modules/colorAnalyzer';
 import { showLoadingIndicator } from '@modules/ui';
 
 export class VisionApp {
@@ -38,71 +39,86 @@ export class VisionApp {
     }
   }
 
-  async analyze() {
-    // 1. 拍照
-    this.camera.capture(this.capturingCanvas);
+  /**
+   * 拍照 →（可选）矫正 → 分割 → 绘制掩码 → UI 更新 →
+   * 乐高色分析 → 主色提取 → 返回乐高最匹配色
+   */
+  async analyze(): Promise<string | undefined> {
+    showLoadingIndicator(true);
+    let legoColor: string | undefined;
 
-    // 2. 可选透视矫正
-    let canvasForSeg = this.capturingCanvas;
     try {
-      const rectified = await this.rectifier.rectify(this.capturingCanvas);
-      if (rectified) canvasForSeg = rectified;
-    } catch (e) {
-      console.warn('Rectification failed, using original canvas', e);
-    }
+      // 1. 拍照
+      this.camera.capture(this.capturingCanvas);
 
-    // 3. 分割
-    const result = await this.segmenter.segment(canvasForSeg);
-    if (!result?.categoryMask) {
-      console.warn('No segmentation mask returned');
-      return;
-    }
-    console.log('Segmentation result:', result);
-
-    // 4. 构造 RGBA 掩码并绘制
-    const mask     = result.categoryMask;
-    const rawBuf   = mask.getAsUint8Array().buffer;
-    const raw      = new Uint8ClampedArray(rawBuf);
-    const [w, h]   = [mask.width, mask.height];
-    const rgba     = new Uint8ClampedArray(w * h * 4);
-    for (let i = 0, j = 0; i < raw.length; i++, j += 4) {
-      if (raw[i] > 0) {
-        rgba[j] = 255; rgba[j+1] = 0; rgba[j+2] = 0; rgba[j+3] = 128;
-      } else {
-        rgba[j+3] = 0;
+      // 2. 可选透视矫正
+      let canvasForSeg = this.capturingCanvas;
+      try {
+        const rectified = await this.rectifier.rectify(this.capturingCanvas);
+        if (rectified) canvasForSeg = rectified;
+      } catch (e) {
+        console.warn('Rectification failed, using original canvas', e);
       }
-    }
-    const tmp = document.createElement('canvas');
-    tmp.width = w; tmp.height = h;
-    tmp.getContext('2d')!.putImageData(new ImageData(rgba, w, h), 0, 0);
 
-    const overlay = document.getElementById('overlay') as HTMLCanvasElement;
-    overlay.width  = this.capturingCanvas.width;
-    overlay.height = this.capturingCanvas.height;
-    const octx = overlay.getContext('2d')!;
-    octx.clearRect(0, 0, overlay.width, overlay.height);
-    octx.globalAlpha = 0.4;
-    octx.drawImage(tmp, 0, 0, overlay.width, overlay.height);
-    octx.globalAlpha = 1;
+      // 3. 分割
+      const result = await this.segmenter.segment(canvasForSeg);
+      if (!result?.categoryMask) {
+        console.warn('No segmentation mask returned');
+        return undefined;
+      }
+      console.log('Segmentation result:', result);
 
-    // 5. 更新 UI 文本
-    const stepEl = document.getElementById('step-indicator');
-    if (stepEl) {
-      stepEl.textContent = 'Segmentation complete';
-    }
-    const infoEl = document.getElementById('packet-info');
-    if (infoEl) {
-      infoEl.textContent = `Mask: ${w}×${h} px`;
-    }
+      // 4. 构造 RGBA 掩码并 overlay
+      const mask = result.categoryMask;
+      const raw = new Uint8ClampedArray(mask.getAsUint8Array().buffer);
+      const [w, h] = [mask.width, mask.height];
+      const rgba = new Uint8ClampedArray(w * h * 4);
+      for (let i = 0, j = 0; i < raw.length; i++, j += 4) {
+        if (raw[i] > 0) {
+          rgba[j]   = 255; // R
+          rgba[j+1] =   0; // G
+          rgba[j+2] =   0; // B
+          rgba[j+3] = 128; // A
+        } else {
+          rgba[j+3] = 0;   // fully transparent
+        }
+      }
+      const tmp = document.createElement('canvas');
+      tmp.width = w; tmp.height = h;
+      tmp.getContext('2d')!.putImageData(new ImageData(rgba, w, h), 0, 0);
 
-    // 6. （可选）主色提取
-    try {
-      const dataUrl = canvasForSeg.toDataURL();
-      const color = await prominent(dataUrl, { amount: 1 });
-      console.log('Dominant color:', color);
+      const overlay = document.getElementById('overlay') as HTMLCanvasElement;
+      overlay.width  = this.capturingCanvas.width;
+      overlay.height = this.capturingCanvas.height;
+      const octx = overlay.getContext('2d')!;
+      octx.clearRect(0, 0, overlay.width, overlay.height);
+      octx.globalAlpha = 0.4;
+      octx.drawImage(tmp, 0, 0, overlay.width, overlay.height);
+      octx.globalAlpha = 1;
+
+      // 5. 更新 UI 文本
+      document.getElementById('step-indicator')?.textContent = 'Segmentation complete';
+      document.getElementById('packet-info')!.textContent = `Mask: ${w}×${h} px`;
+
+      // 6. 乐高色彩分析
+      const ctx = canvasForSeg.getContext('2d')!;
+      const imgData = ctx.getImageData(0, 0, canvasForSeg.width, canvasForSeg.height);
+      legoColor = await analyzeImageData(imgData);
+      console.log('Closest Lego color:', legoColor);
+
+      // 7. 主色提取示例
+      try {
+        const color = await prominent(imgData, { amount: 1 });
+        console.log('Dominant color:', color);
+      } catch (e) {
+        console.error('Color extraction failed:', e);
+      }
     } catch (e) {
-      console.error('Color extraction failed:', e);
+      console.error('analyze 过程中出错:', e);
+    } finally {
+      showLoadingIndicator(false);
     }
-  }  // ← 这是 analyze() 的闭合
 
-}    // ← 这是 class VisionApp 的闭合
+    return legoColor;
+  }
+}

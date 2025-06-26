@@ -27,7 +27,7 @@ window.addEventListener('DOMContentLoaded', async () => {
         document
       .getElementById('result')!
      .scrollIntoView({ behavior: 'smooth', block: 'start' });
-  });
+
 
   // src/index.ts
   bindButton(quizBtn, () => {
