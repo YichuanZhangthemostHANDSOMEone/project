@@ -1,0 +1,81 @@
+<!--&lt;!&ndash; public/quiz.html &ndash;&gt;-->
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+<!--<head><meta charset="UTF-8"><title>Quiz</title></head>-->
+<!--<body>-->
+<!--<div id="quizContainer">-->
+<!--  <header class="topbar">…</header>-->
+<!--  <div class="layout">-->
+<!--    <aside class="sidebar">…</aside>-->
+<!--    <main class="main-content">-->
+<!--      <section class="quiz-section">-->
+<!--        <div class="question-card">-->
+<!--          <h2 id="prompt"></h2>-->
+<!--        </div>-->
+<!--        <div class="options">-->
+<!--          <button class="option-btn" data-index="0"></button>-->
+<!--          <button class="option-btn" data-index="1"></button>-->
+<!--          <button class="option-btn" data-index="2"></button>-->
+<!--          <button class="option-btn" data-index="3"></button>-->
+<!--        </div>-->
+<!--        <div class="sidebar-info">…</div>-->
+<!--        <div id="counter">1 / 5</div>-->
+<!--        <div class="progress-bar"><div class="progress"></div></div>-->
+<!--        &lt;!&ndash; 在翻页按钮位置 &ndash;&gt;-->
+<!--        <div class="nav-arrows">-->
+<!--          <button id="prevBtn">←</button>-->
+<!--          <button id="nextBtn">→</button>-->
+<!--        </div>-->
+<!--      </section>-->
+<!--    </main>-->
+<!--  </div>-->
+<!--</div>-->
+<!--<script src="/quiz.bundle.js"></script>-->
+<!--</body>-->
+<!--</html>-->
+<!-- public/quiz.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Quiz</title>
+  + <!-- 引入和 index.html 一致的全局 CSS -->
+  + <link rel="stylesheet" href="/styles.css">
+  + <!-- 下面这行只是确保 CSS 加载后才生效 -->
+  + <style>body { visibility: hidden; }</style>
+</head>
+<body>
++ <div id="quizContainer" class="layout">  <!-- 加 class="layout" 复用全局布局 -->
+  <header class="topbar">…</header>
+  <div class="layout">
+    <aside class="sidebar">…</aside>
+    <main class="main-content">
+      <section class="quiz-section">
+        <div class="question-card">
+          <h2 id="prompt"></h2>
+        </div>
+        <div class="options">
+          <button class="option-btn" data-index="0"></button>
+          <button class="option-btn" data-index="1"></button>
+          <button class="option-btn" data-index="2"></button>
+          <button class="option-btn" data-index="3"></button>
+        </div>
+        <!-- sidebar-info 可以隐藏或复用 -->
+        -        <div class="sidebar-info">…</div>
+        +        <div class="sidebar-info" style="display:none;"></div>
+        <div class="progress-card">               <!-- 新增 progress-card 容器 -->
+          <div id="counter">0 / 0</div>
+          <div class="progress-bar"><div class="progress"></div></div>
+        </div>
+        <div class="nav-arrows">                  <!-- 保持全局 .btn 视觉一致 -->
+          <button id="prevBtn" class="btn">← Previous</button>
+          <button id="nextBtn" class="btn">Next →</button>
+        </div>
+      </section>
+    </main>
+  </div>
+</div>
+<script src="/quiz.bundle.js"></script>
++ <script>document.body.style.visibility = 'visible'</script>
+</body>
+</html>
