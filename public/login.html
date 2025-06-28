@@ -3,11 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Login / Register</title>
-  <link rel="stylesheet" href="/styles.css" />
+  <title>Login | Lego Network Analyzer</title>
+  <!-- 全局样式 -->
+
+  <!-- 页面专属样式 -->
+
 </head>
 <body>
-<!-- 复用 header -->
+<!-- 顶部导航与全局保持一致 -->
 <header class="topbar">
   <div class="logo">Lego Network Analyzer</div>
   <nav class="main-nav">
@@ -18,36 +21,57 @@
   <button id="loginBtn" class="btn btn-primary">Login</button>
 </header>
 
-<main class="auth-container">
-  <!-- Login 表单 -->
-  <form id="loginForm" class="auth-form">
-    <h2>Login</h2>
-    <input type="email"   id="email"        placeholder="Email" required />
-    <input type="password" id="password"     placeholder="Password" required />
-    <button type="submit" class="btn btn-primary">Login</button>
-    <p class="small-text">
-      Don't have an account?
-      <a href="#" id="showRegister">Register</a>
+<!-- 中间登录容器 -->
+<main class="login-container">
+  <div class="login-box">
+    <h1>Welcome Back!</h1>
+    <p class="login-subtitle">
+      Please log in with your Ninjomock email address
     </p>
-  </form>
+    <div class="emoji-row">👍 ❤️ 😂 😮 😢 😡</div>
 
-  <!-- Register 表单 -->
-  <form id="registerForm" class="auth-form" style="display: none;">
-    <h2>Register</h2>
-    <input type="email"    id="regEmail"        placeholder="Email" required />
-    <input type="password" id="regPassword"     placeholder="Password" required />
-    <input type="password" id="confirmPassword" placeholder="Confirm Password" required />
-    <button type="submit"  class="btn btn-primary">Register</button>
-    <p class="small-text">
-      Already have an account?
-      <a href="#" id="showLogin">Login</a>
-    </p>
-  </form>
+    <form id="loginForm" class="auth-form" novalidate>
+      <!-- 邮箱输入 -->
+      <div class="input-group">
+        <span class="input-icon">✉️</span>
+        <input
+                type="email"
+                id="email"
+                placeholder="Enter your email address"
+                required
+        />
+      </div>
+      <!-- 密码输入 -->
+      <div class="input-group">
+        <span class="input-icon">🔒</span>
+        <input
+                type="password"
+                id="password"
+                placeholder="Enter your password"
+                required
+        />
+      </div>
 
-  <!-- OAuth 登录按钮 -->
-  <div class="oauth">
-    <button id="googleBtn" class="btn btn-secondary">Sign in with Google</button>
-    <button id="msBtn"     class="btn btn-secondary">Sign in with Outlook</button>
+      <!-- 记住我 & 忘记密码 -->
+      <div class="options-row">
+        <label>
+          <input type="checkbox" id="remember" />
+          Stay logged in
+        </label>
+        <a href="#" class="forgot-link">I've forgotten my password</a>
+      </div>
+
+      <!-- 登录按钮 -->
+      <button type="submit" class="btn login-btn">
+        LOGIN <span class="arrow">›</span>
+      </button>
+
+      <!-- 切换注册 -->
+      <div class="register-text">
+        Don’t have an account?
+        <a href="#" id="showRegister">Register</a>
+      </div>
+    </form>
   </div>
 </main>
 
