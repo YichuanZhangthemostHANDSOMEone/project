@@ -135,7 +135,8 @@ module.exports = {
         topics:  './src/topics.ts',
          quiz:    './src/quiz.ts',
         result:  './src/result.ts',
-        login:   './src/login.ts'
+        login:   './src/login.ts',
+        register: './src/register.ts'
    },
     output: {
         filename:   '[name].bundle.js',
