@@ -1,13 +1,63 @@
 
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8" />-->
+<!--    <meta name="viewport" content="width=device-width,initial-scale=1" />-->
+<!--    <title>Select Week</title>-->
+<!--</head>-->
+<!--<body>-->
+<!--&lt;!&ndash; header 与 index.html 完全相同 &ndash;&gt;-->
+<!--<header class="topbar">-->
+<!--    <div class="logo">Lego Network Analyzer</div>-->
+<!--    <nav class="main-nav">-->
+<!--        <a href="/">Home</a>-->
+<!--        <a href="/services">Services</a>-->
+<!--        <a href="/about">About Us</a>-->
+<!--    </nav>-->
+<!--    <button id="loginBtn" class="btn btn-primary">Login</button>-->
+<!--</header>-->
+
+<!--<div class="layout">-->
+<!--    &lt;!&ndash; sidebar 同 index.html 结构，内容为 AR Tool / Select Week &ndash;&gt;-->
+<!--    <aside class="sidebar">-->
+<!--        <ul>-->
+<!--            <li><a href="/"><span class="icon">🏠</span> AR Tool</a></li>-->
+<!--            <li class="active"><span class="icon">🗓️</span> Select Week</li>-->
+<!--        </ul>-->
+<!--    </aside>-->
+
+<!--    <main class="main-content">-->
+<!--        <section class="topics">-->
+<!--            <h2 class="topics-title">Select Week</h2>-->
+<!--            <ul class="week-list animated-list">-->
+<!--                <li><a href="quiz.html?week=1">Week 1: OSI Basics</a></li>-->
+<!--                <li><a href="quiz.html?week=2">Week 2: Secure Layers</a></li>-->
+<!--                <li><a href="quiz.html?week=3">Week 3: Secure Layers</a></li>-->
+<!--                <li><a href="quiz.html?week=4">Week 4: Secure Layers</a></li>-->
+<!--                <li><a href="quiz.html?week=5">Week 5: Secure Layers</a></li>-->
+<!--                <li><a href="quiz.html?week=6">Week 6: Secure Layers</a></li>-->
+<!--                <li><a href="quiz.html?week=7">Week 7: Secure Layers</a></li>-->
+<!--                <li><a href="quiz.html?week=8">Week 8: Secure Layers</a></li>-->
+<!--                <li><a href="quiz.html?week=9">Week 9: Secure Layers</a></li>-->
+<!--                <li><a href="quiz.html?week=10">Week 10: Final Review</a></li>-->
+<!--            </ul>-->
+<!--        </section>-->
+<!--    </main>-->
+<!--</div>-->
+
+<!--<script src="/topics.bundle.js"></script>-->
+<!--</body>-->
+<!--</html>-->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>Select Week</title>
+    <title>Select Week | Lego Network Analyzer</title>
+
 </head>
 <body>
-<!-- header 与 index.html 完全相同 -->
 <header class="topbar">
     <div class="logo">Lego Network Analyzer</div>
     <nav class="main-nav">
@@ -15,22 +65,21 @@
         <a href="/services">Services</a>
         <a href="/about">About Us</a>
     </nav>
-    <button id="loginBtn" class="btn btn-primary">Login</button>
+    <button id="loginBtn" class="btn-primary">Login</button>
 </header>
 
 <div class="layout">
-    <!-- sidebar 同 index.html 结构，内容为 AR Tool / Select Week -->
     <aside class="sidebar">
         <ul>
-            <li><a href="/"><span class="icon">🏠</span> AR Tool</a></li>
-            <li class="active"><span class="icon">🗓️</span> Select Week</li>
+            <li><a href="/"><span class="icon">🏠</span>AR Tool</a></li>
+            <li class="active"><span class="icon">🗓️</span>Select Week</li>
         </ul>
     </aside>
 
     <main class="main-content">
-        <section class="topics">
-            <h2 class="topics-title">Select Week</h2>
-            <ul class="week-list animated-list">
+        <div class="card topics" style="max-width:700px; margin:auto;">
+            <h3>Select Week</h3>
+            <ul class="week-list">
                 <li><a href="quiz.html?week=1">Week 1: OSI Basics</a></li>
                 <li><a href="quiz.html?week=2">Week 2: Secure Layers</a></li>
                 <li><a href="quiz.html?week=3">Week 3: Secure Layers</a></li>
@@ -41,11 +90,10 @@
                 <li><a href="quiz.html?week=8">Week 8: Secure Layers</a></li>
                 <li><a href="quiz.html?week=9">Week 9: Secure Layers</a></li>
                 <li><a href="quiz.html?week=10">Week 10: Final Review</a></li>
-            </ul>
-        </section>
+</ul>
+        </div>
     </main>
 </div>
-
 <script src="/topics.bundle.js"></script>
 </body>
 </html>
