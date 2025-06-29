@@ -24,12 +24,11 @@ window.addEventListener('DOMContentLoaded', async () => {
     await app.analyze();
     showMessage('Check console for results');
     // 自动滚动到结果区
-        document
+    document
       .getElementById('result')!
-     .scrollIntoView({ behavior: 'smooth', block: 'start' });
+      .scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
 
-
-  // src/index.ts
   bindButton(quizBtn, () => {
     window.location.href = '/topics.html';
 
