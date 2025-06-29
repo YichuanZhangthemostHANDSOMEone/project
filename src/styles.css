@@ -1,403 +1,40 @@
-
 :root {
-  --color-primary: #4f46e5;
-  --color-secondary: #6366f1;
-  --color-bg: #f9fafb;
-  --color-surface: #ffffff;
-  --color-border: #e5e7eb;
-  --color-text: #374151;
-  --color-text-secondary: #6b7280;
-  --radius: 8px;
-  --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
-  --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
+  --purple-600: #4f46e5;
+  --purple-500: #6366f1;
+  --gray-50: #f9fafb;
+  --gray-100: #ffffff;
+  --gray-200: #e5e7eb;
+  --gray-700: #374151;
+  --gray-500: #6b7280;
+  --radius: 12px;
+  --shadow-sm: 0 2px 6px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.1);
+  --transition: 0.3s ease;
 }
 
+/*==================== Reset ====================*/
 * {
-  margin: 0; padding: 0;
+  margin: 0;
+  padding: 0;
   box-sizing: border-box;
 }
-
 html, body {
   height: 100%;
   font-family: 'Inter', sans-serif;
-  background: var(--color-bg);
-  color: var(--color-text);
+  background: var(--gray-50);
+  color: var(--gray-700);
   line-height: 1.5;
 }
-
 a {
-  color: var(--color-primary);
+  color: var(--purple-600);
   text-decoration: none;
+  transition: color var(--transition);
 }
 a:hover {
-  text-decoration: underline;
+  color: var(--purple-500);
 }
 
-/* Topbar */
-.topbar {
-  display: flex; align-items: center;
-  padding: 0 1.5rem; height: 64px;
-  background: var(--color-surface);
-  box-shadow: var(--shadow-sm);
-}
-.topbar .logo {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: var(--color-primary);
-}
-.main-nav {
-  margin-left: 2rem;
-  display: flex; gap: 1rem;
-}
-.main-nav a {
-  font-weight: 500;
-  color: var(--color-text-secondary);
-  transition: color .2s;
-}
-.main-nav a:hover {
-  color: var(--color-primary);
-}
-.btn {
-  border: none;
-  border-radius: var(--radius);
-  font-weight: 500;
-  cursor: pointer;
-  transition: background .2s, transform .1s;
-}
-.btn-primary {
-  background: var(--color-primary);
-  color: #fff;
-  padding: 0.5rem 1rem;
-}
-.btn-primary:hover {
-  background: var(--color-secondary);
-  transform: translateY(-1px);
-}
-.btn-secondary {
-  background: var(--color-surface);
-  color: var(--color-text);
-  padding: 0.4rem 0.75rem;
-  border: 1px solid var(--color-border);
-}
-.btn-secondary:hover {
-  background: var(--color-bg);
-}
-
-/* Layout */
-.layout {
-  display: flex;
-  height: calc(100vh - 64px);
-  overflow: hidden;
-}
-.sidebar {
-  width: 220px;
-  background: var(--color-surface);
-  border-right: 1px solid var(--color-border);
-  padding: 1.5rem 1rem;
-  box-shadow: var(--shadow-sm);
-}
-.sidebar ul {
-  list-style: none;
-}
-.sidebar li {
-  display: flex; align-items: center;
-  padding: 0.75rem 1rem;
-  border-radius: var(--radius);
-  gap: 0.5rem;
-  color: var(--color-text-secondary);
-  transition: background .2s, color .2s;
-  cursor: pointer;
-}
-.sidebar li.active,
-.sidebar li:hover {
-  background: var(--color-bg);
-  color: var(--color-primary);
-}
-
-/* Main Content */
-.main-content {
-  flex: 1;
-  overflow-y: auto;
-  padding: 1.5rem;
-}
-
-/* AR Section */
-.ar-section .screen-title {
-  text-align: center;
-  margin-bottom: 1rem;
-  font-size: 1.75rem;
-  color: var(--color-primary);
-}
-.ar-container {
-  position: relative;
-  max-width: 640px;
-  margin: 0 auto 1rem;
-}
-.ar-video,
-.overlay-canvas {
-  width: 100%; display: block;
-}
-.capture-canvas {
-  display: none;
-}
-.step-indicator {
-  position: absolute;
-  top: 8px; left: 50%;
-  transform: translateX(-50%);
-  background: rgba(0,0,0,0.6);
-  color: #fff;
-  padding: 4px 8px;
-  border-radius: var(--radius);
-  font-size: 0.85rem;
-}
-.packet-ui {
-  position: absolute;
-  bottom: 12px; left: 50%;
-  transform: translateX(-50%);
-  width: 95%;
-  background: rgba(255,255,255,0.9);
-  border-radius: var(--radius);
-  padding: 6px;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  font-size: 0.8rem;
-}
-.packet-bar {
-  display: flex; height: 12px;
-  overflow: hidden; border-radius: 4px;
-  background: var(--color-border);
-}
-.controls {
-  align-self: flex-end;
-  display: flex; gap: 8px;
-}
-.btn-group {
-  margin-bottom: 0.5rem;
-}
-.btn-group .btn {
-  margin: 0 .5rem;
-}
-.result-output {
-  background: #f3f4f6;
-
-  border-radius: var(--radius);
-  max-height: 200px;
-  overflow: auto;
-  margin: 0.25rem auto;
-  padding: 0.5rem;
-  max-width: 640px;
-}
-
-/* Quiz Section */
-.quiz-section {
-  max-width: 600px;
-  margin: 2rem auto;
-  padding: 2rem;
-  background: var(--color-surface);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow-md);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-.question-card {
-  width: 100%;
-  margin-bottom: 1.5rem;
-  padding: 1.5rem;
-  background: var(--color-surface);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow-md);
-}
-.question-card h2 {
-  text-align: center;
-  color: var(--color-primary);
-  font-size: 1.25rem;
-}
-.options {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  gap: 1rem;
-  width: 100%;
-  margin-bottom: 1.5rem;
-}
-.option-btn {
-  padding: .75rem;
-  background: var(--color-bg);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius);
-  cursor: pointer;
-  font-weight: 500;
-  transition: background .2s, border-color .2s;
-}
-.option-btn:hover:not(:disabled) {
-  background: var(--color-surface);
-  border-color: var(--color-primary);
-}
-.option-btn.selected {
-  background: var(--color-primary);
-  color: #fff;
-  border-color: var(--color-primary);
-}
-.option-btn:disabled {
-  opacity: .6;
-  cursor: not-allowed;
-}
-.progress-card {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  width: 100%;
-  margin-bottom: 2rem;
-}
-.progress-bar {
-  flex: 1;
-  height: 8px;
-  background: var(--color-border);
-  border-radius: var(--radius);
-  overflow: hidden;
-}
-.progress {
-  width: 0;
-  height: 100%;
-  background: var(--color-primary);
-  transition: width .3s;
-}
-.counter {
-  min-width: 3.5rem;
-  text-align: center;
-  font-weight: 600;
-}
-.nav-arrows {
-  display: flex;
-  gap: 1rem;
-  width: 100%;
-}
-.nav-arrows .btn {
-  flex: 1;
-  padding: .75rem;
-}
-
-/* Timer */
-.timer {
-  display: flex;
-  align-items: center;
-  font-size: 1.25rem;
-  color: var(--color-text-secondary);
-  margin-bottom: 1rem;
-}
-.hourglass {
-  margin-right: .5rem;
-  display: inline-block;
-  animation: spin 1s linear infinite;
-}
-@keyframes spin { from {transform:rotate(0)} to {transform:rotate(360deg)} }
-
-/* Result Section */
-.result-section {
-  background: url('./assets/confetti-bg.svg') center/cover no-repeat;
-  padding: 2rem;
-}
-.score-card {
-  max-width: 320px;
-  margin: 0 auto 2rem;
-  padding: 2rem 1.5rem;
-  text-align: center;
-  background: rgba(255,255,255,0.9);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow-md);
-  position: relative;
-}
-.score-card::before {
-  content: '';
-  position: absolute; top: -30%; left: -30%;
-  width: 160%; height: 160%;
-  background: radial-gradient(circle,#6366f1 0%,transparent 70%);
-  opacity: .2; transform: rotate(45deg); z-index: -1;
-}
-.circle-progress {
-  position: relative;
-  width: 150px; height: 150px;
-  margin: 1rem auto;
-}
-.circle-progress svg {
-  transform: rotate(-90deg);
-  width: 100%; height: 100%;
-}
-.circle-progress circle {
-  fill: none;
-  stroke: var(--color-border);
-  stroke-width: 12;
-}
-.circle-progress .progress {
-  stroke: var(--color-primary);
-  stroke-dasharray: 472;
-  stroke-dashoffset: 472;
-  transition: stroke-dashoffset 1s ease-out;
-}
-.percent {
-  position: absolute;
-  top: 50%; left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: var(--color-primary);
-}
-.score-text {
-  margin-top: .5rem;
-  color: var(--color-text-secondary);
-  font-size: 1.25rem;
-}
-.stats {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 1rem;
-  max-width: 700px;
-  margin: 0 auto 2rem;
-}
-.stat-card {
-  background: var(--color-surface);
-  padding: 1rem;
-  border-radius: var(--radius);
-  box-shadow: var(--shadow-sm);
-  text-align: center;
-}
-.stat-card h3 {
-  font-size: .9rem;
-  color: var(--color-text-secondary);
-  text-transform: uppercase;
-  letter-spacing: .5px;
-}
-.stat-card p {
-  margin-top: .5rem;
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: var(--color-primary);
-}
-.actions {
-  display: flex;
-  gap: 1rem;
-  justify-content: center;
-  margin-bottom: 1.5rem;
-}
-.share-icons {
-  display: flex;
-  gap: .75rem;
-  justify-content: center;
-}
-.share-icons button {
-  background: var(--color-surface);
-  border: none;
-  font-size: 1.5rem;
-  padding: .5rem;
-  border-radius: 50%;
-  cursor: pointer;
-  transition: background .2s;
-}
-.share-icons button:hover {
-  background: var(--color-border);
-}
-/*—— 炫酷的淡入上浮动画 ——*/
+/*==================== Animations ====================*/
 @keyframes fadeInUp {
   from {
     opacity: 0;
@@ -409,199 +46,524 @@ a:hover {
   }
 }
 
-/* 让 week-list 的每一项初始状态在下方 & 透明，并在加载时依次动画 */
-.animated-list li {
-  opacity: 0;
-  transform: translateY(20px);
-  /* 动画只执行一次 */
-  animation-name: fadeInUp;
-  animation-duration: 0.6s;
-  animation-fill-mode: forwards;
+/*==================== Topbar ====================*/
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2rem;
+  height: 64px;
+  background: linear-gradient(90deg, var(--purple-600), var(--purple-500));
+  color: #fff;
+  box-shadow: var(--shadow-md);
+  animation: fadeInUp 0.6s both;
 }
-/* 利用 nth-child 依次错开延迟 */
-.animated-list li:nth-child(1) { animation-delay: 0.1s; }
-.animated-list li:nth-child(2) { animation-delay: 0.2s; }
-.animated-list li:nth-child(3) { animation-delay: 0.3s; }
-.animated-list li:nth-child(4) { animation-delay: 0.4s; }
-.animated-list li:nth-child(5) { animation-delay: 0.5s; }
-.animated-list li:nth-child(6) { animation-delay: 0.6s; }
-.animated-list li:nth-child(7) { animation-delay: 0.7s; }
-.animated-list li:nth-child(8) { animation-delay: 0.8s; }
-.animated-list li:nth-child(9) { animation-delay: 0.9s; }
-.animated-list li:nth-child(10){ animation-delay: 1.0s; }
+.topbar .logo {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+.main-nav {
+  display: flex;
+  gap: 1.5rem;
+}
+.main-nav a {
+  color: rgba(255,255,255,0.9);
+  font-weight: 500;
+}
+.main-nav a:hover {
+  color: #fff;
+}
 
-/* 卡片式布局 + 悬停效果 */
-.topics {
-  max-width: 640px;
-  margin: 2rem auto;
+/*==================== Buttons ====================*/
+.btn-primary {
+  background: #fff;
+  color: var(--purple-600);
+  padding: 0.5rem 1.25rem;
+  border-radius: var(--radius);
+  font-weight: 600;
+  transition: transform 0.2s, background 0.2s;
+}
+.btn-primary:hover {
+  background: #f3f4f6;
+  transform: translateY(-2px);
+}
+
+/*==================== Layout ====================*/
+.layout {
+  display: flex;
+  height: calc(100vh - 64px);
+}
+.sidebar {
+  width: 240px;
+  background: var(--gray-100);
+  border-right: 1px solid var(--gray-200);
   padding: 1.5rem;
-  background: var(--color-surface);
+  animation: fadeInUp 0.8s both;
+}
+.sidebar .user-card {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+.sidebar .user-card img {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  box-shadow: var(--shadow-sm);
+}
+.sidebar .user-card p {
+  margin-top: 0.5rem;
+  font-weight: 600;
+}
+.sidebar ul {
+  list-style: none;
+}
+.sidebar li {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: background var(--transition), color var(--transition);
+}
+.sidebar li.active,
+.sidebar li:hover {
+  background: var(--gray-50);
+  color: var(--purple-600);
+}
+.main-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 2rem;
+  animation: fadeInUp 1s both;
+}
+
+/*==================== AR Container ====================*/
+.ar-container {
+  position: relative;
+  width: 100%;
+  max-width: 800px;
+  aspect-ratio: 16/9;
+  margin: 0 auto;
+  background: #000;
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+  animation: fadeInUp 0.8s both;
+}
+.ar-video,
+.overlay-canvas {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/*==================== Button Group ====================*/
+.btn-group {
+  display: flex;
+  justify-content: center;
+  gap: 3rem;
+  margin: 2rem 0;
+}
+
+/*==================== Icon Buttons ====================*/
+.btn-icon {
+  position: relative;
+  overflow: hidden;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 120px;
+  height: 120px;
+  border-radius: var(--radius);
+  background: var(--purple-600);
+  color: #fff;
+  cursor: pointer;
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+.btn-icon svg {
+  flex-shrink: 0;
+}
+.btn-icon .btn-label {
+  margin-top: 0.25rem;
+  font-size: 0.9rem;
+}
+.btn-icon:active {
+  transform: scale(0.9);
+}
+.btn-icon .ripple {
+  position: absolute;
+  width: 200%;
+  height: 200%;
+  top: 50%;
+  left: 50%;
+  background: rgba(255,255,255,0.3);
+  border-radius: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  pointer-events: none;
+  transition: transform 0.6s ease-out, opacity 0.6s ease-out;
+}
+.btn-icon:focus .ripple,
+.btn-icon:active .ripple {
+  transform: translate(-50%, -50%) scale(1);
+  opacity: 0;
+}
+
+/*==================== Result Output ====================*/
+.result-output {
+  background: #f3f4f6;
+  border-radius: var(--radius);
+  max-height: 200px;
+  overflow: auto;
+  padding: 0.5rem;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+/*==================== Quiz Section ====================*/
+.quiz-section {
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background: var(--gray-100);
   border-radius: var(--radius);
   box-shadow: var(--shadow-md);
+  animation: fadeInUp 0.6s both;
 }
-.topics-title {
-  text-align: center;
+/* ==================== Secondary Button ==================== */
+.btn-secondary {
+  background: var(--gray-100);
+  color: var(--gray-700);
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--gray-200);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background var(--transition), transform 0.2s;
+}
+.btn-secondary:hover {
+  background: var(--gray-50);
+  transform: translateY(-1px);
+}
+.timer {
+  font-size: 1.25rem;
+  color: var(--gray-500);
+  margin-bottom: 1rem;
+}
+.hourglass {
+  margin-right: 0.5rem;
+  display: inline-block;
+  animation: spin 1s linear infinite, pulse 2s ease-in-out infinite;
+}
+@keyframes spin { from { transform: rotate(0); } to { transform: rotate(360deg); } }
+@keyframes pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+.question-card {
+  background: var(--gray-100);
+  padding: 1.5rem;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
   margin-bottom: 1.5rem;
-  font-size: 1.75rem;
-  color: var(--color-primary);
+}
+.question-text {
+  font-size: 1.4rem;
+  color: var(--purple-600);
+  text-align: center;
+}
+.options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+.option-btn {
+  background: var(--gray-50);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius);
+  padding: 0.75rem;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background var(--transition), border-color var(--transition);
+}
+.option-btn:hover:not(:disabled) {
+  background: var(--gray-100);
+  border-color: var(--purple-600);
+}
+.option-btn.selected {
+  background: var(--purple-600);
+  color: #fff;
+  border-color: var(--purple-600);
+}
+.option-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.progress-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+.progress-bar {
+  flex: 1;
+  background: var(--gray-200);
+  height: 8px;
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.progress {
+  width: 0;
+  height: 100%;
+  background: var(--purple-600);
+  transition: width 0.5s ease-out;
+}
+.nav-arrows {
+  display: flex;
+  gap: 1rem;
+}
+.nav-arrows .btn-secondary {
+  flex: 1;
 }
 
-/* grid 布局两列，自适应 */
+/*==================== Result Section ====================*/
+.result-section {
+  max-width: 500px;
+  margin: 2rem auto;
+  text-align: center;
+  animation: fadeInUp 0.6s both;
+}
+.score-card {
+  background: var(--gray-100);
+  padding: 2rem;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-md);
+  margin-bottom: 2rem;
+}
+.circle-progress {
+  position: relative;
+  width: 150px;
+  height: 150px;
+  margin: 0 auto 1rem;
+}
+.circle-progress svg {
+  transform: rotate(-90deg);
+  width: 100%;
+  height: 100%;
+}
+.circle-progress circle {
+  fill: none;
+  stroke: var(--gray-200);
+  stroke-width: 12;
+}
+.circle-progress .progress {
+  stroke: var(--purple-600);
+  stroke-dasharray: 472;
+  stroke-dashoffset: 472;
+  transition: stroke-dashoffset 1s ease-out;
+}
+.percent {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--purple-600);
+}
+.score-text {
+  font-size: 1.25rem;
+  color: var(--gray-500);
+  margin-bottom: 1.5rem;
+}
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+.stat-card {
+  background: var(--gray-100);
+  padding: 1rem;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+}
+.stat-card h3 {
+  font-size: 0.9rem;
+  color: var(--gray-500);
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+}
+.stat-card p {
+  font-size: 1.25rem;
+  color: var(--purple-600);
+  font-weight: 600;
+}
+.actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+.share-icons {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+}
+.share-icons button {
+  background: var(--gray-100);
+  border: none;
+  font-size: 1.5rem;
+  padding: 0.5rem;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: background var(--transition);
+}
+.share-icons button:hover {
+  background: var(--gray-200);
+}
+
+/*==================== Topics Section ====================*/
+.topics {
+  max-width: 700px;
+  margin: 2rem auto;
+}
+.topics-title {
+  font-size: 1.75rem;
+  color: var(--purple-600);
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
 .week-list {
   list-style: none;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 1rem;
-  padding: 0;
 }
 .week-list li {
-  background: var(--color-bg);
-  border: 1px solid var(--color-border);
+  background: var(--gray-100);
   border-radius: var(--radius);
-  overflow: hidden;
-  transition: transform .3s, box-shadow .3s;
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--transition), box-shadow var(--transition);
 }
-/* 悬停卡片放大 + 投影 */
 .week-list li:hover {
   transform: translateY(-5px) scale(1.02);
-  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+  box-shadow: var(--shadow-md);
 }
-/* 链接全卡片可点，居中显示 */
 .week-list a {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: block;
   padding: 1rem;
-  height: 100%;
-  color: var(--color-text);
+  color: var(--gray-700);
   font-weight: 600;
-  text-decoration: none;
-  transition: color .2s;
-}
-.week-list a:hover {
-  color: var(--color-primary);
-}
-/*—— 公共淡入上浮动画 ——*/
-@keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-/*—— 闪动（呼吸）效果 ——*/
-@keyframes pulse {
-  0%,100% { transform: scale(1); }
-  50%     { transform: scale(1.1); }
-}
-
-/*—— 给整个 quiz-section 加载时淡入 ——*/
-.animated-quiz {
-  opacity: 0;
-  animation: fadeInUp .6s ease-out forwards;
-}
-
-/*—— 计时沙漏的呼吸动效 ——*/
-.timer .hourglass {
-  display: inline-block;
-  animation:
-          spin 1s linear infinite,
-          pulse 2s ease-in-out infinite;
-}
-
-/*—— 题目文字淡入 ——*/
-.animated-quiz .question-card {
-  opacity: 0;
-  animation: fadeInUp .5s ease-out .3s forwards;
-}
-.animated-quiz .question-text {
-  font-size: 1.4rem;
-  color: var(--color-primary);
-  margin: 0;
   text-align: center;
 }
 
-/*—— 选项按钮依次弹入 ——*/
-.animated-quiz .options .option-btn {
-  opacity: 0;
-  transform: translateY(20px);
-  animation: fadeInUp .4s ease-out forwards;
+/*==================== Login Page Specific ====================*/
+.login-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  min-height: calc(100vh - 64px);
 }
-/* 延迟由 nth-child 依次递增 */
-.animated-quiz .options .option-btn:nth-child(1) { animation-delay: .5s; }
-.animated-quiz .options .option-btn:nth-child(2) { animation-delay: .6s; }
-.animated-quiz .options .option-btn:nth-child(3) { animation-delay: .7s; }
-.animated-quiz .options .option-btn:nth-child(4) { animation-delay: .8s; }
-
-/*—— 选项按钮悬停效果 ——*/
-.option-btn {
-  padding: .75rem 1rem;
-  border: 1px solid var(--color-border);
-  background: var(--color-bg);
+.login-card {
+  background: #fff;
+  padding: 2rem;
   border-radius: var(--radius);
+  box-shadow: var(--shadow-md);
+  width: 100%;
+  max-width: 400px;
+  animation: fadeInUp 0.6s both;
+}
+.btn-google {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 0.75rem;
+  border: none;
+  border-radius: var(--radius);
+  background: #fff;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
   font-weight: 500;
   cursor: pointer;
-  transition: background .2s, transform .2s, box-shadow .2s;
+  transition: background var(--transition);
+  margin-bottom: 1rem;
 }
-.option-btn:hover:not(:disabled) {
-  background: var(--color-surface);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  transform: translateY(-2px);
+.btn-google:hover {
+  background: #f3f4f6;
 }
-.option-btn.selected {
-  background: var(--color-primary);
-  color: #fff;
-  border-color: var(--color-primary);
+.google-icon {
+  width: 20px;
+  height: 20px;
+  margin-right: 0.5rem;
 }
-
-/*—— 进度条加载动画 ——*/
-.progress-bar .progress {
-  width: 0;
-  transition: width 0.5s ease-out;
+.divider {
+  position: relative;
+  text-align: center;
+  margin: 1rem 0;
+  font-size: 0.9rem;
+  color: var(--gray-500);
 }
-/* JS 更新进度时，只要修改 .progress width 即可享受动画 */
-
-/*—— 导航按钮淡入 ——*/
-.animated-quiz .nav-arrows .btn {
-  opacity: 0;
-  animation: fadeInUp .4s ease-out forwards;
-  animation-delay: 1.0s;
-}
-
-/*—— 小屏幕适配 ——*/
-@media (max-width: 600px) {
-  .animated-quiz .options {
-    grid-template-columns: 1fr;
-  }
-}
-/* 隐藏捕获用的 canvas，只用 overlay 来画结果 */
-.capture-canvas {
-  display: none !important;
-}
-
-/* overlay canvas 永远铺满 ar-container（覆盖 video） */
-.overlay-canvas {
+.divider::before,
+.divider::after {
+  content: "";
   position: absolute;
-  top: 0;
-  left: 0;
-  /* 撑满父元素，确保高度和视频一致 */
+  top: 50%;
+  width: 40%;
+  height: 1px;
+  background: var(--gray-200);
+}
+.divider::before { left: 0; }
+.divider::after { right: 0; }
+.divider span {
+  background: #fff;
+  padding: 0 0.5rem;
+}
+.input-group {
+  position: relative;
+  margin-bottom: 1rem;
+}
+.input-group .input-icon {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.2rem;
+}
+.input-group input {
   width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: 2;            /* 确保在 video 之上 */
+  padding: 0.75rem 1rem 0.75rem 3rem;
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius);
+  font-size: 1rem;
+  transition: border-color 0.2s;
 }
-
-/* video 层级稍低 */
-.ar-video {
-  position: relative;
-  z-index: 1;
+.input-group input:focus {
+  outline: none;
+  border-color: var(--purple-600);
 }
-
-/* 确保父容器固定比例，避免 canvas 拉伸变形 */
-.ar-container {
-  /* 如果你固定了宽度，可以同时给一个高度，或用 16:9 比例盒 */
-  position: relative;
-  width: 640px;  /* 或 100% */
-  height: 360px; /* 根据你的摄像头分辨率调整 */
-  margin: 0 auto 1rem;
-  background: #000;
-  overflow: hidden;
+.btn-email {
+  width: 100%;
+  padding: 0.75rem;
+  border: none;
+  border-radius: var(--radius);
+  background: var(--purple-600);
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background var(--transition), transform 0.2s;
+  margin-top: 0.5rem;
+}
+.btn-email:hover {
+  background: var(--purple-500);
+  transform: translateY(-1px);
+}
+.register-text {
+  text-align: center;
+  margin-top: 1.5rem;
+  font-size: 0.9rem;
+}
+.register-text a {
+  font-weight: 600;
 }

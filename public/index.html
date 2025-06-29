@@ -1,3 +1,71 @@
+
+
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8" />-->
+<!--    <meta name="viewport" content="width=device-width,initial-scale=1" />-->
+<!--    <title>Lego Network Analyzer</title>-->
+<!--</head>-->
+<!--<body>-->
+<!--<header class="topbar">-->
+<!--    <div class="logo">Lego Network Analyzer</div>-->
+<!--    <nav class="main-nav">-->
+<!--        <a href="/">Home</a>-->
+<!--        <a href="/services">Services</a>-->
+<!--        <a href="/about">About Us</a>-->
+<!--    </nav>-->
+<!--    <button id="authBtn" class="btn btn-primary"></button>-->
+<!--</header>-->
+
+<!--<div class="layout">-->
+<!--    <aside class="sidebar">-->
+<!--        <div class="user-card">-->
+<!--            <img id="userAvatar" alt="Avatar" />-->
+<!--            <p id="welcomeText"></p>-->
+<!--        </div>-->
+<!--        <ul>-->
+<!--            <li class="active">-->
+<!--                <a href="/"><span class="icon">🏠</span>AR Tool</a>-->
+<!--            </li>-->
+<!--            <li><span class="icon">📖</span>Study Record</li>-->
+<!--        </ul>-->
+<!--    </aside>-->
+
+<!--    <main class="main-content">-->
+<!--        <section class="ar-section">-->
+<!--            <h1 class="screen-title">Scan Your Lego Network</h1>-->
+
+<!--            <div id="ar-container" class="ar-container">-->
+<!--                <video id="video" autoplay playsinline class="ar-video"></video>-->
+<!--                <canvas id="capture" class="capture-canvas"></canvas>-->
+<!--                <canvas id="overlay" class="overlay-canvas"></canvas>-->
+<!--                <div id="step-indicator" class="step-indicator">Step 1 / 4</div>-->
+<!--                <div id="packet-ui" class="packet-ui">-->
+<!--                    <div id="packet-info">Selected: —</div>-->
+<!--                    <div id="packet-bar" class="packet-bar"></div>-->
+<!--                    <div id="controls" class="controls">-->
+<!--                        <button id="ar-btn" class="btn btn-secondary">📦</button>-->
+<!--                        <button id="pause-btn" class="btn btn-secondary">⏸️</button>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+
+<!--            &lt;!&ndash; ↓—— 新增：将两个按钮放在摄像头下方 ——↓ &ndash;&gt;-->
+<!--            <div class="btn-group">-->
+<!--                <button id="captureBtn" class="btn btn-primary">📸</button>-->
+<!--                <button id="quizBtn"    class="btn btn-primary">▶quiz</button>-->
+<!--            </div>-->
+<!--            &lt;!&ndash; ↑—— 两按钮结束 ——↑ &ndash;&gt;-->
+
+<!--            <pre id="result" class="result-output"></pre>-->
+<!--        </section>-->
+<!--    </main>-->
+<!--</div>-->
+
+<!--<script src="/main.bundle.js"></script>-->
+<!--</body>-->
+<!--</html>-->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -14,48 +82,62 @@
         <a href="/services">Services</a>
         <a href="/about">About Us</a>
     </nav>
-    <button id="loginBtn" class="btn btn-primary">Login</button>
+    <button id="authBtn" class="btn-primary">Logout</button>
 </header>
 
 <div class="layout">
     <aside class="sidebar">
+        <div class="user-card">
+            <img
+                    id="userAvatar"
+                    src="https://api.dicebear.com/7.x/identicon/svg?seed=example"
+                    alt="Avatar"
+            />
+            <p id="welcomeText">Welcome, you@example.com</p>
+        </div>
         <ul>
-            <li class="active">
-                <a href="/">
-                    <span class="icon">🏠</span>
-                    AR Tool
-                </a>
-            </li>
-            <li><span class="icon">📖</span> Study Record</li>
+            <li class="active"><a href="/"><span class="icon">🏠</span>AR Tool</a></li>
+            <li><span class="icon">📖</span>Study Record</li>
         </ul>
     </aside>
 
     <main class="main-content">
         <section class="ar-section">
             <h1 class="screen-title">Scan Your Lego Network</h1>
+
             <div id="ar-container" class="ar-container">
                 <video id="video" autoplay playsinline class="ar-video"></video>
-                <canvas id="capture" class="capture-canvas"></canvas>
+                <!-- 隐藏的拍照用 Canvas -->
+                <canvas id="capture" style="display:none;"></canvas>
+                <!-- 可视化 overlay -->
                 <canvas id="overlay" class="overlay-canvas"></canvas>
+
+                <!-- ↙️ 重新加回这两行 ↙️ -->
                 <div id="step-indicator" class="step-indicator">Step 1 / 4</div>
-                <div id="packet-ui" class="packet-ui">
-                    <div id="packet-info">Selected: —</div>
-                    <div id="packet-bar" class="packet-bar"></div>
-                    <div id="controls" class="controls">
-                        <button id="ar-btn" class="btn btn-secondary">📦</button>
-                        <button id="pause-btn" class="btn btn-secondary">⏸️</button>
-                    </div>
+                <div id="packet-ui"      class="packet-ui">
+                    <div id="packet-info">Mask: —</div>
+                    <div id="packet-bar"   class="packet-bar"></div>
                 </div>
             </div>
+
             <div class="btn-group">
-                <button id="captureBtn" class="btn btn-primary">📸 Capture</button>
-                <button id="quizBtn" class="btn btn-primary">▶️ Quiz</button>
+                <button id="captureBtn" class="btn-icon">
+                    <!-- Camera SVG 省略 -->
+                    <span class="btn-label">Capture</span>
+                    <span class="ripple"></span>
+                </button>
+                <button id="quizBtn" class="btn-icon">
+                    <!-- Play SVG 省略 -->
+                    <span class="btn-label">Quiz</span>
+                    <span class="ripple"></span>
+                </button>
             </div>
+
             <pre id="result" class="result-output"></pre>
         </section>
     </main>
 </div>
 
-<script src="/main.bundle.js"></script>
+<script src="/main.bundle.js" defer></script>
 </body>
 </html>

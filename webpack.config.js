@@ -124,13 +124,20 @@ const Dotenv  = require('dotenv-webpack');
 module.exports = {
     mode: 'development',
 
+    // entry: {
+    //     main:   './src/index.ts',
+    //     topics: './src/topics.ts',
+    //     quiz:   './src/quiz.ts',
+    //     result: './src/result.ts'
+    // },
     entry: {
-        main:   './src/index.ts',
-        topics: './src/topics.ts',
-        quiz:   './src/quiz.ts',
-        result: './src/result.ts'
-    },
-
+        main:    './src/index.ts',
+        topics:  './src/topics.ts',
+         quiz:    './src/quiz.ts',
+        result:  './src/result.ts',
+        login:   './src/login.ts',
+        register: './src/register.ts'
+   },
     output: {
         filename:   '[name].bundle.js',
         path:       path.resolve(__dirname, 'dist'),
