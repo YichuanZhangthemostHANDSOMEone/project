@@ -4,6 +4,7 @@ import { LegoSegmenter } from '@modules/segmentation';
 import { BoardRectifier } from '@modules/rectify';
 import { showLoadingIndicator, showMessage } from '@modules/ui';
 import { prominent } from 'color.js';
+import { analyzeImageData } from '@modules/colorAnalyzer';
 
 export class VisionApp {
   private camera: Camera;
@@ -60,20 +61,8 @@ export class VisionApp {
       // 调试：显示原始帧
       document.body.appendChild(this.captureCanvas);
 
-      // 2. 可选透视矫正
-      let canvasForSeg = this.captureCanvas;
-      try {
-        const rectified = await this.rectifier.rectify(this.captureCanvas);
-        if (rectified) {
-          canvasForSeg = rectified;
-          // 同步 rectified canvas 的尺寸（rectifier 返回的 canvas 自带尺寸，一般不需要手动设置）
-        }
-      } catch (e) {
-        console.warn('Rectification failed, using original canvas', e);
-      }
-
-      // 3. 运行分割模型
-      const result = await this.segmenter.segment(canvasForSeg);
+      // 2. 运行分割模型（先在原始画面上分割）
+      const result = await this.segmenter.segment(this.captureCanvas);
       if (!result) {
         showMessage('无法检测到前景，请将乐高底板放入画面中心');
         return;
@@ -105,21 +94,30 @@ export class VisionApp {
       // 调试：显示黑白掩码
       document.body.appendChild(maskCanvas);
 
-      // 6. 用掩码裁剪原图
+      // 6. 对原图和掩码一并进行透视矫正
+      let rectifiedCanvas = this.captureCanvas;
+      let rectifiedMask   = maskCanvas;
+      try {
+        const rectified = await this.rectifier.rectifyWithMask(this.captureCanvas, maskCanvas);
+        rectifiedCanvas = rectified.canvas;
+        rectifiedMask   = rectified.mask;
+      } catch (e) {
+        console.warn('Rectification failed, continue with original', e);
+      }
+
+      // 7. 用掩码裁剪矫正后的图像
       const clippedCanvas = document.createElement('canvas');
-      clippedCanvas.width  = width;
-      clippedCanvas.height = height;
+      clippedCanvas.width  = rectifiedCanvas.width;
+      clippedCanvas.height = rectifiedCanvas.height;
       const clipCtx = clippedCanvas.getContext('2d', { willReadFrequently: true })!;
 
-      // 6.1 画原始帧
-      clipCtx.drawImage(this.captureCanvas, 0, 0, width, height);
+      // 7.1 画矫正后的帧
+      clipCtx.drawImage(rectifiedCanvas, 0, 0);
       clipCtx.globalCompositeOperation = 'destination-in';
-      clipCtx.drawImage(maskCanvas, 0, 0, width, height);
+      clipCtx.drawImage(rectifiedMask, 0, 0);
       clipCtx.globalCompositeOperation = 'source-over';
       // 调试：显示裁剪后只含乐高区域的图
       document.body.appendChild(clippedCanvas);
-
-      // 7. 主色提取
       const dataUrl = clippedCanvas.toDataURL();
       if (dataUrl === 'data:,') {
         showMessage('裁剪后的 Canvas 内容为空，无法提取颜色');
@@ -130,6 +128,47 @@ export class VisionApp {
           ? (rawColors[0] as [number, number, number])
           : (rawColors as [number, number, number]);
       console.log('乐高区域主色:', r, g, b);
+
+      // 7.2 按连通域识别每块乐高颜色
+      const maskData = rectifiedMask.getContext('2d', { willReadFrequently: true })!
+        .getImageData(0, 0, rectifiedMask.width, rectifiedMask.height);
+      const visited = new Int32Array(rectifiedMask.width * rectifiedMask.height).fill(-1);
+      const compColors: { color: string; x: number; y: number }[] = [];
+      let labelId = 0;
+      const directions = [1, -1, rectifiedMask.width, -rectifiedMask.width];
+      for (let i = 0; i < visited.length; i++) {
+        if (visited[i] !== -1) continue;
+        if (maskData.data[i * 4 + 3] === 0) continue;
+
+        let minX = rectifiedMask.width, minY = rectifiedMask.height;
+        let maxX = 0, maxY = 0;
+        const stack = [i];
+        visited[i] = labelId;
+        while (stack.length) {
+          const idx = stack.pop()!;
+          const x = idx % rectifiedMask.width;
+          const y = Math.floor(idx / rectifiedMask.width);
+          if (x < minX) minX = x;
+          if (y < minY) minY = y;
+          if (x > maxX) maxX = x;
+          if (y > maxY) maxY = y;
+
+          for (const d of directions) {
+            const ni = idx + d;
+            if (ni < 0 || ni >= visited.length) continue;
+            if (Math.abs(d) === 1 && Math.floor(ni / rectifiedMask.width) !== y) continue;
+            if (visited[ni] === -1 && maskData.data[ni * 4 + 3] !== 0) {
+              visited[ni] = labelId;
+              stack.push(ni);
+            }
+          }
+        }
+
+        const region = clipCtx.getImageData(minX, minY, maxX - minX + 1, maxY - minY + 1);
+        const colorName = await analyzeImageData(region);
+        compColors.push({ color: colorName, x: minX, y: minY });
+        labelId++;
+      }
 
       // 8. 画轮廓
       this.overlayCtx.clearRect(0, 0, this.overlayCanvas.width, this.overlayCanvas.height);
@@ -143,6 +182,12 @@ export class VisionApp {
         }
         this.overlayCtx.closePath();
         this.overlayCtx.stroke();
+      }
+
+      // 显示每块乐高的颜色名称
+      this.overlayCtx.fillStyle = '#ffffff';
+      for (const comp of compColors) {
+        this.overlayCtx.fillText(comp.color, comp.x, comp.y - 2);
       }
     } catch (err) {
       console.error('analyze 过程中出错:', err);
