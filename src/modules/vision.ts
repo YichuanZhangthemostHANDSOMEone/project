@@ -1,4 +1,3 @@
-// src/vision.ts
 import { Camera } from '@modules/camera';
 import { LegoSegmenter } from '@modules/segmentation';
 import { BoardRectifier } from '@modules/rectify';
@@ -131,7 +130,7 @@ export class VisionApp {
 
       // 7.2 按连通域识别每块乐高颜色
       const maskData = rectifiedMask.getContext('2d', { willReadFrequently: true })!
-        .getImageData(0, 0, rectifiedMask.width, rectifiedMask.height);
+          .getImageData(0, 0, rectifiedMask.width, rectifiedMask.height);
       const visited = new Int32Array(rectifiedMask.width * rectifiedMask.height).fill(-1);
       const compColors: { color: string; x: number; y: number }[] = [];
       let labelId = 0;

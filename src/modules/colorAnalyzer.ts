@@ -1,7 +1,7 @@
 import quantize from 'quantize';
 import { prominent } from 'color.js';
 
-const LEGO_COLORS: { name: string; rgb: [number, number, number] }[] = [
+export const LEGO_COLORS: { name: string; rgb: [number, number, number] }[] = [
   { name: 'White', rgb: [242, 243, 242] },
   { name: 'Black', rgb: [27, 42, 52] },
   { name: 'Red', rgb: [196, 40, 28] },
