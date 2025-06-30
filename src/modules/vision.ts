@@ -2,7 +2,7 @@
 import { Camera } from '@modules/camera';
 import { LegoSegmenter } from '@modules/segmentation';
 import { BoardRectifier } from '@modules/rectify';
-import { showLoadingIndicator } from '@modules/ui';
+import { showLoadingIndicator, showMessage } from '@modules/ui';
 import { prominent } from 'color.js';
 
 export class VisionApp {
@@ -74,6 +74,10 @@ export class VisionApp {
 
       // 3. 运行分割模型
       const result = await this.segmenter.segment(canvasForSeg);
+      if (!result) {
+        showMessage('无法检测到前景，请将乐高底板放入画面中心');
+        return;
+      }
       console.log('Segmentation result:', result);
 
       // 4. 单通道掩码 → RGBA ImageData
@@ -118,7 +122,8 @@ export class VisionApp {
       // 7. 主色提取
       const dataUrl = clippedCanvas.toDataURL();
       if (dataUrl === 'data:,') {
-        throw new Error('生成的 Data URL 无效，可能是空白图像');
+        showMessage('裁剪后的 Canvas 内容为空，无法提取颜色');
+        return;
       }
       const rawColors = await prominent(dataUrl, { amount: 1 });
       const [r, g, b] = Array.isArray(rawColors[0])

@@ -1,5 +1,5 @@
 // src/segmentation.ts
-import { FilesetResolver, ImageSegmenter, ImageSegmenterResult } from '@mediapipe/tasks-vision';
+import { FilesetResolver, ImageSegmenter } from '@mediapipe/tasks-vision';
 import { showMessage } from '@modules/ui';
 
 const ROBOFLOW_API_KEY = process.env.ROBOFLOW_API_KEY;
@@ -30,6 +30,7 @@ export class LegoSegmenter {
 
   async segment(image: HTMLCanvasElement): Promise<any | null> {
     if (!this.segmenter) return null;
+
     const result = this.segmenter.segment(image);
     if (!result || !result.categoryMask) {
       console.warn('Segmentation returned no valid category mask');
@@ -41,7 +42,9 @@ export class LegoSegmenter {
     const hasForeground = maskData.some((v: number) => v > 0);
     if (!hasForeground) {
       console.warn('Segmentation mask contains only background pixels');
+      return null;
     }
+
     return result;
   }
 }
