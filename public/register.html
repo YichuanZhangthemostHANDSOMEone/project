@@ -1,14 +1,14 @@
-<!--&lt;!&ndash; public/register.html &ndash;&gt;-->
+
+
 <!--<!DOCTYPE html>-->
 <!--<html lang="en">-->
 <!--<head>-->
 <!--  <meta charset="UTF-8" />-->
 <!--  <meta name="viewport" content="width=device-width,initial-scale=1" />-->
 <!--  <title>Register | Lego Network Analyzer</title>-->
-<!--  -->
+
 <!--</head>-->
 <!--<body>-->
-<!--&lt;!&ndash; 顶部导航与全局保持一致 &ndash;&gt;-->
 <!--<header class="topbar">-->
 <!--  <div class="logo">Lego Network Analyzer</div>-->
 <!--  <nav class="main-nav">-->
@@ -16,94 +16,74 @@
 <!--    <a href="/services">Services</a>-->
 <!--    <a href="/about">About Us</a>-->
 <!--  </nav>-->
-<!--  <button id="loginBtn" class="btn btn-primary">Login</button>-->
+<!--  <button id="loginBtn" class="btn-primary">Login</button>-->
 <!--</header>-->
 
-<!--&lt;!&ndash; 中间注册容器 &ndash;&gt;-->
-<!--<main class="login-container">-->
-<!--  <div class="login-box">-->
-<!--    <h1>Create Account!</h1>-->
-<!--    <p class="login-subtitle">-->
-<!--      Please register with your Ninjomock email address-->
-<!--    </p>-->
-<!--    <div class="emoji-row">👍 ❤️ 😂 😮 😢 😡</div>-->
-
-<!--    <form id="registerForm" class="auth-form" novalidate>-->
-<!--      &lt;!&ndash; 邮箱输入 &ndash;&gt;-->
+<!--<main class="main-content">-->
+<!--  <div class="card" style="max-width:400px; margin:2rem auto;">-->
+<!--    <h3>Create Account</h3>-->
+<!--    <form id="registerForm" novalidate>-->
 <!--      <div class="input-group">-->
-<!--        <span class="input-icon">✉️</span>-->
-<!--        <input-->
-<!--                type="email"-->
-<!--                id="email"-->
-<!--                placeholder="Enter your email address"-->
-<!--                required-->
-<!--        />-->
+<!--        <input type="email" id="email" placeholder="Email" required />-->
 <!--      </div>-->
-<!--      &lt;!&ndash; 密码输入 &ndash;&gt;-->
 <!--      <div class="input-group">-->
-<!--        <span class="input-icon">🔒</span>-->
-<!--        <input-->
-<!--                type="password"-->
-<!--                id="password"-->
-<!--                placeholder="Enter your password"-->
-<!--                required-->
-<!--        />-->
+<!--        <input type="password" id="password" placeholder="Password" required />-->
 <!--      </div>-->
-
-<!--      &lt;!&ndash; 注册按钮 &ndash;&gt;-->
-<!--      <button type="submit" class="btn login-btn">-->
-<!--        REGISTER <span class="arrow">›</span>-->
-<!--      </button>-->
-
-<!--      &lt;!&ndash; 切换登录 &ndash;&gt;-->
-<!--      <div class="register-text">-->
-<!--        Already have an account?-->
-<!--        <a href="#" id="showLogin">Login</a>-->
-<!--      </div>-->
+<!--      <button type="submit" class="btn-primary" style="width:100%;">Register</button>-->
 <!--    </form>-->
+<!--    <p style="text-align:center; margin-top:1rem;">-->
+<!--      Already have an account? <a href="/login.html">Login</a>-->
+<!--    </p>-->
 <!--  </div>-->
 <!--</main>-->
-
 <!--<script src="/register.bundle.js"></script>-->
 <!--</body>-->
 <!--</html>-->
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Register | Lego Network Analyzer</title>
-
+  <title>注册 | 乐高网络分析器</title>
 </head>
 <body>
 <header class="topbar">
-  <div class="logo">Lego Network Analyzer</div>
+  <div class="logo">乐高网络分析器</div>
   <nav class="main-nav">
-    <a href="/">Home</a>
-    <a href="/services">Services</a>
-    <a href="/about">About Us</a>
+    <a href="/">首页</a>
+    <a href="/services">服务</a>
+    <a href="/about">关于我们</a>
   </nav>
-  <button id="loginBtn" class="btn-primary">Login</button>
+  <button id="loginBtn" class="btn-primary">登录</button>
 </header>
 
 <main class="main-content">
   <div class="card" style="max-width:400px; margin:2rem auto;">
-    <h3>Create Account</h3>
+    <h3>创建账号</h3>
     <form id="registerForm" novalidate>
       <div class="input-group">
-        <input type="email" id="email" placeholder="Email" required />
+        <input type="text" id="nameInput" placeholder="姓名" required />
       </div>
       <div class="input-group">
-        <input type="password" id="password" placeholder="Password" required />
+        <input type="email" id="email" placeholder="邮箱" required />
       </div>
-      <button type="submit" class="btn-primary" style="width:100%;">Register</button>
+      <div class="input-group">
+        <input type="password" id="password" placeholder="密码" required />
+      </div>
+      <div class="input-group">
+        <select id="roleSelect" required>
+          <option value="student">学生</option>
+          <option value="teacher">教师</option>
+        </select>
+      </div>
+      <button type="submit" class="btn-primary" style="width:100%;">注册</button>
     </form>
     <p style="text-align:center; margin-top:1rem;">
-      Already have an account? <a href="/login.html">Login</a>
+      已有账号？<a href="/login.html">登录</a>
     </p>
   </div>
 </main>
-<script src="/register.bundle.js"></script>
+<script src="/register.bundle.js" defer></script>
 </body>
 </html>

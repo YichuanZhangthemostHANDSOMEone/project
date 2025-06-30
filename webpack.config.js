@@ -130,14 +130,24 @@ module.exports = {
     //     quiz:   './src/quiz.ts',
     //     result: './src/result.ts'
     // },
+   //  entry: {
+   //      main:    './src/index.ts',
+   //      topics:  './src/topics.ts',
+   //       quiz:    './src/quiz.ts',
+   //      result:  './src/result.ts',
+   //      login:   './src/login.ts',
+   //      register: './src/register.ts'
+   // },
     entry: {
-        main:    './src/index.ts',
-        topics:  './src/topics.ts',
-         quiz:    './src/quiz.ts',
-        result:  './src/result.ts',
-        login:   './src/login.ts',
-        register: './src/register.ts'
-   },
+        main:            './src/index.ts',
+        topics:          './src/topics.ts',
+        quiz:            './src/quiz.ts',
+        result:          './src/result.ts',
+        login:           './src/login.ts',
+        register:        './src/register.ts',
+        student_record:  './src/student_record.ts',
+        teacher_record:  './src/teacher_record.ts'
+    },
     output: {
         filename:   '[name].bundle.js',
         path:       path.resolve(__dirname, 'dist'),

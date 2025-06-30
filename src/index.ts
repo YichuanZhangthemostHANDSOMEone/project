@@ -48,36 +48,63 @@
 //   });
 // });
 
-// src/index.ts
-import { auth } from '@modules/firebase';
+// // src/index.ts
+// import { auth } from '@modules/firebase';
+// import { onAuthStateChanged, signOut, User } from 'firebase/auth';
+// import { VisionApp } from '@modules/vision';
+// import './styles.css';
+// import { bindButton, showMessage } from '@modules/ui';
+//
+// window.addEventListener('DOMContentLoaded', async () => {
+//   // 1️⃣ 顶栏登录状态 & 头像
+//   const authBtn     = document.getElementById('authBtn')     as HTMLButtonElement;
+//   const avatarImg   = document.getElementById('userAvatar') as HTMLImageElement;
+//   const welcomeText = document.getElementById('welcomeText') as HTMLElement;
+//
+//   // @ts-ignore
+//   onAuthStateChanged(auth, async (user: User | null) => {
+//     if (user) {
+//       const seed = encodeURIComponent(user.email || '');
+//       avatarImg.src = `https://api.dicebear.com/7.x/identicon/svg?seed=${seed}`;
+//       avatarImg.onerror = () => { avatarImg.src = '/assets/default-avatar.svg'; };
+//       welcomeText.textContent = `Welcome, ${user.email}`;
+//       authBtn.textContent = 'Logout';
+//       authBtn.onclick = async () => {
+//         await signOut(auth);
+//         window.location.href = '/login.html';
+//       };
+//     } else {
+//       window.location.href = '/login.html';
+//     }
+//   });
+
+import { auth, db } from '@modules/firebase';
 import { onAuthStateChanged, signOut, User } from 'firebase/auth';
+import { doc, getDoc } from 'firebase/firestore';
 import { VisionApp } from '@modules/vision';
 import './styles.css';
 import { bindButton, showMessage } from '@modules/ui';
 
 window.addEventListener('DOMContentLoaded', async () => {
-  // 1️⃣ 顶栏登录状态 & 头像
-  const authBtn     = document.getElementById('authBtn')     as HTMLButtonElement;
-  const avatarImg   = document.getElementById('userAvatar') as HTMLImageElement;
-  const welcomeText = document.getElementById('welcomeText') as HTMLElement;
+  const authBtn   = document.getElementById('authBtn') as HTMLButtonElement;
+  const recordBtn = document.getElementById('recordBtn') as HTMLAnchorElement;
 
   // @ts-ignore
   onAuthStateChanged(auth, async (user: User | null) => {
     if (user) {
-      const seed = encodeURIComponent(user.email || '');
-      avatarImg.src = `https://api.dicebear.com/7.x/identicon/svg?seed=${seed}`;
-      avatarImg.onerror = () => { avatarImg.src = '/assets/default-avatar.svg'; };
-      welcomeText.textContent = `Welcome, ${user.email}`;
-      authBtn.textContent = 'Logout';
-      authBtn.onclick = async () => {
-        await signOut(auth);
-        window.location.href = '/login.html';
+      // 头像与登出逻辑…
+      recordBtn.onclick = async e => {
+        e.preventDefault();
+        const snap = await getDoc(doc(db, 'users', user.uid));
+        const role = snap.exists() ? snap.data().role : 'student';
+        window.location.href = role === 'teacher'
+            ? '/teacher_record.html'
+            : '/student_record.html';
       };
     } else {
       window.location.href = '/login.html';
     }
   });
-
   // 2️⃣ AR 扫描逻辑
   const videoEl       = document.getElementById('video')      as HTMLVideoElement;
   const captureCanvas = document.getElementById('capture')    as HTMLCanvasElement | null;
