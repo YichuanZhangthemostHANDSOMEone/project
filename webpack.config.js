@@ -146,7 +146,8 @@ module.exports = {
         login:           './src/login.ts',
         register:        './src/register.ts',
         student_record:  './src/student_record.ts',
-        teacher_record:  './src/teacher_record.ts'
+        teacher_record:  './src/teacher_record.ts',
+        quiz_editor:     './src/quiz_editor.ts'
     },
     output: {
         filename:   '[name].bundle.js',

@@ -96,7 +96,12 @@ window.addEventListener('DOMContentLoaded', async () => {
       recordBtn.onclick = async e => {
         e.preventDefault();
         const snap = await getDoc(doc(db, 'users', user.uid));
-        const role = snap.exists() ? snap.data().role : 'student';
+        let role = 'student';
+        if (snap.exists()) {
+          role = snap.data().role;
+        } else if (user.email === 'steve.kerrison@jcu.edu.au') {
+          role = 'teacher';
+        }
         window.location.href = role === 'teacher'
             ? '/teacher_record.html'
             : '/student_record.html';
