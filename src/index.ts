@@ -78,39 +78,61 @@
 //     }
 //   });
 
+// src/index.ts
+
+// src/index.ts
+
+import './styles.css';
 import { auth, db } from '@modules/firebase';
 import { onAuthStateChanged, signOut, User } from 'firebase/auth';
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { VisionApp } from '@modules/vision';
-import './styles.css';
 import { bindButton, showMessage } from '@modules/ui';
 
 window.addEventListener('DOMContentLoaded', async () => {
-  const authBtn   = document.getElementById('authBtn') as HTMLButtonElement;
+  const authBtn   = document.getElementById('authBtn')   as HTMLButtonElement;
   const recordBtn = document.getElementById('recordBtn') as HTMLAnchorElement;
 
+  // 监听登录状态
   // @ts-ignore
   onAuthStateChanged(auth, async (user: User | null) => {
-    if (user) {
-      // 头像与登出逻辑…
-      recordBtn.onclick = async e => {
-        e.preventDefault();
-        const snap = await getDoc(doc(db, 'users', user.uid));
-        let role = 'student';
-        if (snap.exists()) {
-          role = snap.data().role;
-        } else if (user.email === 'steve.kerrison@jcu.edu.au') {
-          role = 'teacher';
-        }
-        window.location.href = role === 'teacher'
-            ? '/teacher_record.html'
-            : '/student_record.html';
-      };
-    } else {
+    if (!user) {
+      // 未登录者跳回登录页
       window.location.href = '/login.html';
+      return;
     }
+
+    // ── 1) 确保 /users/{uid} 文档已创建，并写入 role 字段 ── //
+    const userRef = doc(db, 'users', user.uid);
+    const userSnap = await getDoc(userRef);
+    if (!userSnap.exists()) {
+      // 你可以按邮箱来区分老师帐户
+      const isTeacher = user.email === 'steve.kerrison@jcu.edu.au';
+      await setDoc(userRef, {
+        email: user.email,
+        role:  isTeacher ? 'teacher' : 'student'
+      }, { merge: true });
+    }
+
+    // ── 2) 顶栏：登出按钮 ── //
+    authBtn.textContent = 'Logout';
+    authBtn.onclick = async () => {
+      await signOut(auth);
+      window.location.href = '/login.html';
+    };
+
+    // ── 3) “学习记录” 跳转，根据 role 决定去学生端还是教师端 ── //
+    recordBtn.onclick = async e => {
+      e.preventDefault();
+      const snap2 = await getDoc(userRef);
+      const role  = snap2.exists() ? (snap2.data() as any).role : 'student';
+      window.location.href = role === 'teacher'
+          ? '/teacher_record.html'
+          : '/student_record.html';
+    };
   });
-  // 2️⃣ AR 扫描逻辑
+
+  // ── 4) 原有的 AR 扫描 + Quiz 按钮逻辑 ── //
   const videoEl       = document.getElementById('video')      as HTMLVideoElement;
   const captureCanvas = document.getElementById('capture')    as HTMLCanvasElement | null;
   const overlayCanvas = document.getElementById('overlay')    as HTMLCanvasElement;
