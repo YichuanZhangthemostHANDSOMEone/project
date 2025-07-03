@@ -1,9 +1,8 @@
 import './styles.css';
 import { auth, db } from '@modules/firebase';
 import { onAuthStateChanged, signOut, User } from 'firebase/auth';
-import { collection, query, where, getDocs, addDoc, deleteDoc, doc } from 'firebase/firestore';
+import { collection, query, where, getDocs, addDoc, deleteDoc, doc, getDoc } from 'firebase/firestore';
 
-const TEACHER_EMAIL = 'steve.kerrison@jcu.edu.au';
 
 document.addEventListener('DOMContentLoaded', () => {
   const weekSelect  = document.getElementById('weekSelect') as HTMLSelectElement;
@@ -34,7 +33,9 @@ document.addEventListener('DOMContentLoaded', () => {
   // @ts-ignore
   onAuthStateChanged(auth, async (user: User | null) => {
     if (!user) return (window.location.href = '/login.html');
-    if (user.email !== TEACHER_EMAIL) {
+    const snapDoc = await getDoc(doc(db, 'users', user.uid));
+    const role = snapDoc.exists() ? (snapDoc.data() as any).role : undefined;
+    if (role !== 'teacher' && user.email !== 'steve.kerrison@jcu.edu.au') {
       window.location.href = '/';
       return;
     }

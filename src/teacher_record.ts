@@ -1,11 +1,10 @@
 import './styles.css';
 import { auth, db } from '@modules/firebase';
 import { onAuthStateChanged, signOut, User } from 'firebase/auth';
-import { collectionGroup, getDocs } from 'firebase/firestore';
+import { collectionGroup, getDocs, doc, getDoc } from 'firebase/firestore';
 // @ts-ignore
 import Chart from 'chart.js/auto';
 
-const TEACHER_EMAIL = 'steve.kerrison@jcu.edu.au';
 
 document.addEventListener('DOMContentLoaded', () => {
   const logoutBtn = document.getElementById('logoutBtn') as HTMLButtonElement | null;
@@ -21,7 +20,9 @@ document.addEventListener('DOMContentLoaded', () => {
       };
     }
 
-    if (user.email !== TEACHER_EMAIL) {
+    const snapDoc = await getDoc(doc(db, 'users', user.uid));
+    const role = snapDoc.exists() ? (snapDoc.data() as any).role : undefined;
+    if (role !== 'teacher' && user.email !== 'steve.kerrison@jcu.edu.au') {
       window.location.href = '/student_record.html';
       return;
     }
