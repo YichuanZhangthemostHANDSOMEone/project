@@ -72,12 +72,13 @@
 
 // login.ts
 import './styles.css';
-import { auth } from '@modules/firebase';
+import { auth, db } from '@modules/firebase';
 import {
     signInWithEmailAndPassword,
     GoogleAuthProvider,
     signInWithPopup
 } from 'firebase/auth';
+import { doc, getDoc } from 'firebase/firestore';
 
 window.addEventListener('DOMContentLoaded', () => {
     // —— 元素引用 —— //
@@ -93,6 +94,18 @@ window.addEventListener('DOMContentLoaded', () => {
 
     let step = 1;
     let savedEmail = '';
+
+    async function redirectAfterLogin(user: any) {
+        const snap = await getDoc(doc(db, 'users', user.uid));
+        let role = 'student';
+        if (snap.exists()) {
+            // @ts-ignore
+            role = (snap.data() as any).role;
+        } else if (user.email === 'steve.kerrison@jcu.edu.au') {
+            role = 'teacher';
+        }
+        window.location.href = role === 'teacher' ? '/teacher_record.html' : '/';
+    }
 
     // —— 顶部 “Login” 按钮跳到登录页 —— //
     loginBtn?.addEventListener('click', () => {
@@ -113,8 +126,7 @@ window.addEventListener('DOMContentLoaded', () => {
         try {
             const result = await signInWithPopup(auth, provider);
             console.log('Google 登录成功 →', result.user);
-            // 登录成功后跳转首页
-            window.location.href = '/';
+            await redirectAfterLogin(result.user);
         } catch (err: any) {
             console.error('Google 登录失败 →', err);
             alert('Google 登录失败：' + err.message);
@@ -151,9 +163,9 @@ window.addEventListener('DOMContentLoaded', () => {
                 return;
             }
             try {
-                await signInWithEmailAndPassword(auth, savedEmail, pwd);
+                const result = await signInWithEmailAndPassword(auth, savedEmail, pwd);
                 console.log('邮箱/密码 登录成功 →', savedEmail);
-                window.location.href = '/';
+                await redirectAfterLogin(result.user);
             } catch (err: any) {
                 console.error('Email 登录失败 →', err);
                 alert('Login failed: ' + err.message);
