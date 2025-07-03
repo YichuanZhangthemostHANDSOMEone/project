@@ -93,6 +93,7 @@ window.addEventListener('DOMContentLoaded', async () => {
   const authBtn   = document.getElementById('authBtn')   as HTMLButtonElement;
   const recordBtn = document.getElementById('recordBtn') as HTMLAnchorElement;
 
+
   // 监听登录状态
   // @ts-ignore
   onAuthStateChanged(auth, async (user: User | null) => {

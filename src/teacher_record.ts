@@ -22,6 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
       };
     }
 
+
     // 权限校验：只有 teacher 可以进
     const userDoc = await getDoc(doc(db, 'users', user.uid));
     const role = userDoc.exists() ? (userDoc.data() as any).role : undefined;
