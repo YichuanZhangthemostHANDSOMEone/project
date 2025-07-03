@@ -48,7 +48,15 @@
 import './styles.css';
 import { auth, db } from '@modules/firebase';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
+import {
+    collection,
+    doc,
+    getDocs,
+    query,
+    serverTimestamp,
+    setDoc,
+    where
+} from 'firebase/firestore';
 
 window.addEventListener('DOMContentLoaded', () => {
     const loginBtn = document.getElementById('loginBtn');
@@ -59,27 +67,55 @@ window.addEventListener('DOMContentLoaded', () => {
     const registerForm = document.getElementById('registerForm');
     registerForm?.addEventListener('submit', async e => {
         e.preventDefault();
-        const name = (document.getElementById('nameInput') as HTMLInputElement).value.trim();
-        const email = (document.getElementById('email') as HTMLInputElement).value.trim();
-        const password = (document.getElementById('password') as HTMLInputElement).value;
-        const role = (document.getElementById('roleSelect') as HTMLSelectElement).value;
+
+        const nameEl = document.getElementById('nameInput') as HTMLInputElement;
+        const emailEl = document.getElementById('emailInput') as HTMLInputElement;
+        const passwordEl = document.getElementById('passwordInput') as HTMLInputElement;
+        const roleEl = document.getElementById('roleSelect') as HTMLSelectElement;
+
+        const name = nameEl.value.trim();
+        const email = emailEl.value.trim();
+        const password = passwordEl.value;
+        const role = roleEl.value;
+
         if (!name || !email || !password) {
             alert('请填写所有字段。');
             return;
         }
+
         try {
+            // 1. 检查用户名在 Firestore 中是否已存在
+            const nameQ = query(
+                collection(db, 'users'),
+                where('name', '==', name)
+            );
+            const nameSnap = await getDocs(nameQ);
+            if (!nameSnap.empty) {
+                alert('用户名已存在，请选择其他用户名。');
+                return;
+            }
+
+            // 2. 使用 Firebase Auth 创建用户（已自动防止重复 email）
             const userCred = await createUserWithEmailAndPassword(auth, email, password);
             const uid = userCred.user.uid;
-            // 保存用户资料到 Firestore
+
+            // 3. 将用户资料写入 Firestore
             await setDoc(doc(db, 'users', uid), {
                 name,
                 email,
                 role,
                 createdAt: serverTimestamp()
             });
+
+            // 注册完成，跳转到登录页
             window.location.href = '/login.html';
         } catch (err: any) {
-            alert('注册失败：' + err.message);
+            // 处理 email 重复的错误
+            if (err.code === 'auth/email-already-in-use') {
+                alert('该邮箱已被注册，请直接登录或使用其他邮箱。');
+            } else {
+                alert('注册失败：' + err.message);
+            }
         }
     });
 });
