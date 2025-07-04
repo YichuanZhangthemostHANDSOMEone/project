@@ -1,5 +1,4 @@
 //
-// // src/quiz.ts
 //
 // import { db, auth } from '@modules/firebase';
 // import './styles.css';
@@ -8,7 +7,9 @@
 //     query,
 //     where,
 //     getDocs,
-//     orderBy
+//     orderBy,
+//     addDoc,
+//     serverTimestamp
 // } from 'firebase/firestore';
 // import { signOut } from 'firebase/auth';
 //
@@ -107,8 +108,8 @@
 //     startTimer();
 // }
 //
-// // 翻页：记录本题再跳转
-// function navigate(delta: number) {
+// // 翻页：记录本题再跳转；如果答完了，就写 Firestore 再跳结果
+// async function navigate(delta: number) {
 //     clearTimer();
 //     const sel = document.querySelector<HTMLButtonElement>('.option-btn.selected');
 //     const spent = Math.floor((Date.now() - questionStartTime) / 1000);
@@ -116,10 +117,33 @@
 //
 //     current += delta;
 //     if (current >= qs.length) {
-//         // 跳转到结果页
+//         // —— 把整场测验结果写入 Firestore —— //
+//         try {
+//             const user = auth.currentUser;
+//             if (user) {
+//                 const results: { correct: boolean; time: number }[] =
+//                     JSON.parse(sessionStorage.getItem('quizResults') || '[]');
+//                 const correctCnt = results.filter(r => r.correct).length;
+//                 const accuracy = results.length ? correctCnt / results.length : 0;
+//                 await addDoc(
+//                     collection(db, 'users', user.uid, 'quizAttempts'),
+//                     {
+//                         week: getWeek(),
+//                         correctCnt,
+//                         accuracy,
+//                         timestamp: serverTimestamp()
+//                     }
+//                 );
+//             }
+//         } catch (err) {
+//             console.error('保存测验记录失败：', err);
+//         }
+//
+//         // 跳结果页
 //         window.location.href = '/result.html';
 //         return;
 //     }
+//
 //     if (current < 0) current = 0;
 //     renderQuestion();
 // }
@@ -157,9 +181,9 @@
 //         const all: QuizQuestion[] = snap.docs.map((d: { data: () => any; }) => {
 //             const data = d.data() as any;
 //             return {
-//                 id:           data.id,
-//                 prompt:       data.prompt,
-//                 options:      data.options,
+//                 id: data.id,
+//                 prompt: data.prompt,
+//                 options: data.options,
 //                 correctIndex: data.correctIndex
 //             };
 //         });
@@ -170,14 +194,12 @@
 //             return;
 //         }
 //
-//         // 随机抽取至多 5 道
 //         qs = all.length > 5 ? shuffleArray(all).slice(0, 5) : all;
 //         bindUI();
 //         renderQuestion();
 //
 //         document.getElementById('prevBtn')?.addEventListener('click', () => navigate(-1));
 //         document.getElementById('nextBtn')?.addEventListener('click', () => navigate(1));
-//
 //     } catch (err) {
 //         console.error('加载题目出错：', err);
 //         document.getElementById('quizContainer')!.innerHTML =
@@ -185,6 +207,7 @@
 //     }
 // });
 
+// src/quiz.ts
 import { db, auth } from '@modules/firebase';
 import './styles.css';
 import {
@@ -284,6 +307,7 @@ function renderQuestion() {
         btn.textContent = q.options[i] || '';
         btn.disabled = q.options[i] == null;
         btn.classList.remove('selected');
+        btn.dataset.index = String(i);
     });
 
     document.getElementById('counter')!.textContent = `${current + 1} / ${qs.length}`;
@@ -306,16 +330,21 @@ async function navigate(delta: number) {
         try {
             const user = auth.currentUser;
             if (user) {
+                // 从 sessionStorage 取出每题记录
                 const results: { correct: boolean; time: number }[] =
                     JSON.parse(sessionStorage.getItem('quizResults') || '[]');
                 const correctCnt = results.filter(r => r.correct).length;
                 const accuracy = results.length ? correctCnt / results.length : 0;
+                // **新增：计算总耗时**
+                const totalTime = results.reduce((sum, r) => sum + r.time, 0);
+
                 await addDoc(
                     collection(db, 'users', user.uid, 'quizAttempts'),
                     {
                         week: getWeek(),
                         correctCnt,
                         accuracy,
+                        totalTime,           // <-- 写入 totalTime
                         timestamp: serverTimestamp()
                     }
                 );
