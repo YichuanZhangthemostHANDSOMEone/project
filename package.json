@@ -6,10 +6,17 @@
   "scripts": {
     "tsc:build": "tsc",
     "start": "webpack serve --mode development",
-    "build": "webpack --mode production"
+    "build": "webpack --mode production",
+    "postbuild": "node scripts/copy-bundle.js"
   },
   "devDependencies": {
+    "crypto-browserify": "^3.12.1",
     "css-loader": "^7.1.2",
+    "dotenv": "^16.5.0",
+    "dotenv-webpack": "^8.1.0",
+    "mini-css-extract-plugin": "^2.9.2",
+    "path-browserify": "^1.0.1",
+    "process": "^0.11.10",
     "style-loader": "^4.0.0",
     "ts-loader": "^9.5.2",
     "typescript": "^5.8.3",
@@ -21,6 +28,7 @@
   "dependencies": {
     "@mediapipe/tasks-vision": "^0.10.22-rc.20250304",
     "@techstark/opencv-js": "^4.10.0-release.1",
+    "chart.js": "^4.5.0",
     "color.js": "^1.2.0",
     "firebase": "^11.8.1",
     "quantize": "^1.0.2"
