@@ -6,6 +6,8 @@ declare module 'firebase/firestore';
 declare module 'firebase/analytics';
 declare module 'quantize';
 declare module 'color.js';
+declare module 'colorjs.io';
+declare module 'colorjs.io/src/deltaE.js';
 
 declare module '@techstark/opencv-js';
 

@@ -29,6 +29,7 @@
     "@mediapipe/tasks-vision": "^0.10.22-rc.20250304",
     "@techstark/opencv-js": "^4.10.0-release.1",
     "color.js": "^1.2.0",
+    "colorjs.io": "^0.5.2",
     "firebase": "^11.8.1",
     "quantize": "^1.0.2"
   }
