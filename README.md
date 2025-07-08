@@ -36,6 +36,11 @@ color quantization and Lab-based filtering, applies morphological
 operations and contour analysis, and finally classifies each detected
 LEGO block using the closest match from the built-in color palette.
 
+The `VisionApp` class integrates this pipeline. When the user clicks the
+**Capture** button, `LegoPipeline` analyzes the frame and returns the
+detected blocks. Results are drawn on the overlay canvas with the
+identified color labels.
+
 The pipeline depends on OpenCV.js, MediaPipe Tasks Vision, `quantize`,
 `colorjs.io` and `color.js`. Ensure these packages are installed with
 `npm install`.
