@@ -27,4 +27,17 @@ The application relies on the following environment variables:
 - `FIREBASE_MEASUREMENT_ID`
 - `ROBOFLOW_API_KEY`
 
+### LEGO segmentation pipeline
+
+This project implements an advanced image processing pipeline in
+`src/modules/legoPipeline.ts`. It captures a frame from the camera,
+segments LEGO regions using MediaPipe and a Roboflow model, performs
+color quantization and Lab-based filtering, applies morphological
+operations and contour analysis, and finally classifies each detected
+LEGO block using the closest match from the built-in color palette.
+
+The pipeline depends on OpenCV.js, MediaPipe Tasks Vision, `quantize`,
+`colorjs.io` and `color.js`. Ensure these packages are installed with
+`npm install`.
+
 These values are loaded using `dotenv` and injected during the webpack build.
