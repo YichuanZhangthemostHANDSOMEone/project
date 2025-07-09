@@ -28,6 +28,7 @@ export class VisionApp {
   async analyze(): Promise<LegoBlockResult[]> {
     this.camera.capture(this.capture);
     const blocks = await this.pipeline.analyze(this.capture);
+    console.log('Segmentation result:', blocks);
     this.draw(blocks);
     return blocks;
   }
