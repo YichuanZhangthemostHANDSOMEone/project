@@ -571,3 +571,20 @@ a:hover {
 .hidden {
   display: none;
 }
+/* ====== Charts & Tabs ====== */
+.tabs { margin-bottom: 1rem; }
+.week-tabs { display: flex; gap: 0.5rem; overflow-x: auto; margin-bottom: 1rem; }
+.week-tab { padding: 0.5rem 1rem; background: var(--gray-100); border: none; border-radius: var(--radius); cursor: pointer; transition: background var(--transition); }
+.week-tab:hover, .week-tab.active { background: var(--purple-500); color: #fff; }
+
+.charts { display: grid; grid-template-columns: 1fr; gap: 2rem; }
+@media (min-width: 768px) { .charts { grid-template-columns: 1fr 1fr; } }
+.chart-container { background: var(--gray-100); padding: 1rem; border-radius: var(--radius); box-shadow: var(--shadow-sm); }
+.chart-header { display: flex; align-items: center; justify-content: flex-end; margin-bottom: 0.5rem; }
+.chart-header label { margin-right: 0.5rem; }
+
+/* ====== Calendar ====== */
+.calendar-container { margin-top: 2rem; background: var(--gray-100); padding: 1rem; border-radius: var(--radius); box-shadow: var(--shadow-sm); max-width: 350px; }
+.calendar-table { width: 100%; border-collapse: collapse; }
+.calendar-table th, .calendar-table td { width: 14.28%; text-align: center; padding: 0.5rem; }
+.calendar-table td.today { background: var(--purple-500); color: #fff; border-radius: 50%; }
