@@ -200,6 +200,7 @@ export class LegoPipeline {
     let minDiff = Infinity;
     const sample = new Color('lab', lab);
     for (const c of legoColors) {
+
       const normalizedRgb = [
         c.rgb[0] / 255,
         c.rgb[1] / 255,
@@ -208,6 +209,7 @@ export class LegoPipeline {
 
       const legoCol = new Color('srgb', normalizedRgb);  // 用 'srgb' 而不是 'rgb'
       const diff = sample.deltaE(legoCol, { method: '2000' });
+
       if (diff < minDiff) {
         minDiff = diff;
         best = c;

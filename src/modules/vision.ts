@@ -9,9 +9,9 @@ export class VisionApp {
   private pipeline: LegoPipeline;
 
   constructor(
-      private video: HTMLVideoElement,
-      private capture: HTMLCanvasElement,
-      private overlay: HTMLCanvasElement
+    private video: HTMLVideoElement,
+    private capture: HTMLCanvasElement,
+    private overlay: HTMLCanvasElement
   ) {
     this.camera = new Camera(video);
     this.segmenter = new LegoSegmenter();
@@ -28,9 +28,19 @@ export class VisionApp {
   async analyze(): Promise<LegoBlockResult[]> {
     this.camera.capture(this.capture);
     const blocks = await this.pipeline.analyze(this.capture);
-    console.log('Segmentation result:', blocks);
     this.draw(blocks);
     return blocks;
+  }
+
+  async analyzeAndExport(): Promise<{ image: string; blocks: LegoBlockResult[] }> {
+    const blocks = await this.analyze();
+    const out = document.createElement('canvas');
+    out.width = this.capture.width;
+    out.height = this.capture.height;
+    const ctx = out.getContext('2d')!;
+    ctx.drawImage(this.capture, 0, 0);
+    ctx.drawImage(this.overlay, 0, 0);
+    return { image: out.toDataURL('image/png'), blocks };
   }
 
   private draw(blocks: LegoBlockResult[]) {

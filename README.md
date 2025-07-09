@@ -37,9 +37,10 @@ operations and contour analysis, and finally classifies each detected
 LEGO block using the closest match from the built-in color palette.
 
 The `VisionApp` class integrates this pipeline. When the user clicks the
-**Capture** button, `LegoPipeline` analyzes the frame and returns the
-detected blocks. Results are drawn on the overlay canvas with the
-identified color labels.
+**Capture** button, the app now shows a spinner while the frame is analyzed,
+then automatically navigates to `lego-result.html`. The page displays the
+annotated image and includes a **Return** button to go back to the main
+camera page.
 
 The pipeline depends on OpenCV.js, MediaPipe Tasks Vision, `quantize`,
 `colorjs.io` and `color.js`. Ensure these packages are installed with

@@ -9,7 +9,8 @@ module.exports = {
         main:   './src/index.ts',
         topics: './src/topics.ts',
         quiz:   './src/quiz.ts',
-        result: './src/result.ts'
+        result: './src/result.ts',
+        'lego-result': './src/legoResult.ts'
     },
 
     output: {
