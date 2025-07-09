@@ -1,7 +1,7 @@
 
 import { VisionApp } from '@modules/vision';
 import './styles.css';
-import { bindButton, showMessage } from '@modules/ui';
+import { bindButton, showMessage, showProcessingSpinner } from '@modules/ui';
 import './styles.css';
 console.log('🚀 DOMContentLoaded 触发');
 window.addEventListener('DOMContentLoaded', async () => {
@@ -23,17 +23,17 @@ window.addEventListener('DOMContentLoaded', async () => {
   }
 
   bindButton(captureBtn, async () => {
+    let timer: any;
     try {
-      await app.analyze();
-      showMessage('Check console for results');
-      // 自动滚动到结果区
-      const resultElement = document.getElementById('result');
-      if (resultElement) {
-        resultElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      } else {
-        console.warn("Result element not found for scrolling.");
-      }
+      timer = setTimeout(() => showProcessingSpinner(true), 500);
+      const { image } = await app.analyzeAndExport();
+      clearTimeout(timer);
+      showProcessingSpinner(false);
+      sessionStorage.setItem('legoResultImage', image);
+      window.location.href = '/lego-result.html';
     } catch (error) {
+      clearTimeout(timer);
+      showProcessingSpinner(false);
       console.error('Analysis failed:', error);
       showMessage('An error occurred during analysis. Please try again.');
     }
