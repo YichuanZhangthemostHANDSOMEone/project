@@ -48,3 +48,4 @@ export class LegoSegmenter {
     return result;
   }
 }
+
