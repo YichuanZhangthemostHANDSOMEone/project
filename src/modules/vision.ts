@@ -1,4 +1,3 @@
-// src/modules/vision.ts
 import { Camera } from '@modules/camera';
 import { LegoSegmenter } from '@modules/segmentation';
 import { LegoPipeline, LegoBlockResult } from '@modules/legoPipeline';

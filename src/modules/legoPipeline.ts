@@ -134,11 +134,13 @@ export class LegoPipeline {
       Math.max(0, lab[0] - 10),
       Math.max(0, lab[1] - 15),
       Math.max(0, lab[2] - 15),
+      0,
     ]);
     const upper = new cv.Mat(labMat.rows, labMat.cols, labMat.type(), [
       Math.min(255, lab[0] + 10),
       Math.min(255, lab[1] + 15),
       Math.min(255, lab[2] + 15),
+      255,
     ]);
     const mask = new cv.Mat();
     cv.inRange(labMat, lower, upper, mask);
@@ -198,7 +200,16 @@ export class LegoPipeline {
     let minDiff = Infinity;
     const sample = new Color('lab', lab);
     for (const c of legoColors) {
-      const diff = sample.deltaE(new Color('rgb', c.rgb), { method: '2000' });
+
+      const normalizedRgb = [
+        c.rgb[0] / 255,
+        c.rgb[1] / 255,
+        c.rgb[2] / 255,
+      ] as [number, number, number];
+
+      const legoCol = new Color('srgb', normalizedRgb);  // 用 'srgb' 而不是 'rgb'
+      const diff = sample.deltaE(legoCol, { method: '2000' });
+
       if (diff < minDiff) {
         minDiff = diff;
         best = c;
