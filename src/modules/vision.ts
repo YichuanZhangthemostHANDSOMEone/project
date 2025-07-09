@@ -1,4 +1,3 @@
-// src/modules/vision.ts
 import { Camera } from '@modules/camera';
 import { LegoSegmenter } from '@modules/segmentation';
 import { LegoPipeline, LegoBlockResult } from '@modules/legoPipeline';
@@ -10,9 +9,9 @@ export class VisionApp {
   private pipeline: LegoPipeline;
 
   constructor(
-    private video: HTMLVideoElement,
-    private capture: HTMLCanvasElement,
-    private overlay: HTMLCanvasElement
+      private video: HTMLVideoElement,
+      private capture: HTMLCanvasElement,
+      private overlay: HTMLCanvasElement
   ) {
     this.camera = new Camera(video);
     this.segmenter = new LegoSegmenter();
