@@ -1,9 +1,11 @@
+
 <!--<!DOCTYPE html>-->
 <!--<html lang="zh">-->
 <!--<head>-->
 <!--  <meta charset="UTF-8" />-->
 <!--  <meta name="viewport" content="width=device-width,initial-scale=1" />-->
 <!--  <title>Study Record | Student</title>-->
+
 <!--</head>-->
 <!--<body>-->
 <!--<header class="topbar">-->
@@ -12,10 +14,56 @@
 <!--  <button id="logoutBtn" class="btn-primary">Logout</button>-->
 <!--</header>-->
 <!--<main class="main-content">-->
-<!--  <h2>Testing Performance</h2>-->
-<!--  <canvas id="weeklyBarChart" width="400" height="200"></canvas>-->
-<!--  <canvas id="accuracyLineChart" width="400" height="200"></canvas>-->
-<!--  <canvas id="timePieChart" width="400" height="200"></canvas>-->
+<!--  <h2>学习记录</h2>-->
+<!--  &lt;!&ndash; 周数导航标签 &ndash;&gt;-->
+<!--  <div class="tabs">-->
+<!--    <div class="week-tabs" id="weekTabs"></div>-->
+<!--  </div>-->
+
+<!--  <div class="charts">-->
+<!--    &lt;!&ndash; 饼图：每周尝试次数 &ndash;&gt;-->
+<!--    <div class="chart-container">-->
+<!--      <div class="chart-header">-->
+<!--        <label for="pieMetricSelect">index:</label>-->
+<!--        <select id="pieMetricSelect">-->
+<!--          <option value="attempts">Number of attempts: </option>-->
+<!--        </select>-->
+<!--      </div>-->
+<!--      <canvas id="weeklyPieChart"></canvas>-->
+<!--    </div>-->
+
+<!--    &lt;!&ndash; 折线图：单周各次尝试数据 &ndash;&gt;-->
+<!--    <div class="chart-container">-->
+<!--      <div class="chart-header">-->
+<!--        <label for="weekMetricSelect">index:</label>-->
+<!--        <select id="weekMetricSelect">-->
+<!--          <option value="score">Score</option>-->
+<!--          <option value="accuracy">Accuracy</option>-->
+<!--          <option value="time">Time</option>-->
+<!--        </select>-->
+<!--      </div>-->
+<!--      <canvas id="weekLineChart"></canvas>-->
+<!--    </div>-->
+
+<!--    &lt;!&ndash; 柱状图：周平均指标 &ndash;&gt;-->
+<!--    <div class="chart-container">-->
+<!--      <div class="chart-header">-->
+<!--        <label for="aggregateMetricSelect">index:</label>-->
+<!--        <select id="aggregateMetricSelect">-->
+<!--          <option value="attempts">Average number of attempts</option>-->
+<!--          <option value="accuracy">Average Accuracy</option>-->
+<!--          <option value="time">Average Time</option>-->
+<!--        </select>-->
+<!--      </div>-->
+<!--      <canvas id="aggregatedBarChart"></canvas>-->
+<!--    </div>-->
+<!--  </div>-->
+
+<!--  &lt;!&ndash; 日历 &ndash;&gt;-->
+<!--  <div class="calendar-container">-->
+<!--    <h3>日历</h3>-->
+<!--    <div id="calendar"></div>-->
+<!--  </div>-->
 <!--</main>-->
 <!--<script src="/student_record.bundle.js" defer></script>-->
 <!--</body>-->
@@ -26,7 +74,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Study Record | Student</title>
-  <link rel="stylesheet" href="/styles.css" />
+
 </head>
 <body>
 <header class="topbar">
@@ -34,58 +82,62 @@
   <nav class="main-nav"><a href="/">Home</a></nav>
   <button id="logoutBtn" class="btn-primary">Logout</button>
 </header>
+
 <main class="main-content">
-  <h2>学习记录</h2>
-  <!-- 周数导航标签 -->
-  <div class="tabs">
-    <div class="week-tabs" id="weekTabs"></div>
-  </div>
-
-  <div class="charts">
-    <!-- 饼图：每周尝试次数 -->
-    <div class="chart-container">
-      <div class="chart-header">
-        <label for="pieMetricSelect">指标:</label>
-        <select id="pieMetricSelect">
-          <option value="attempts">尝试次数</option>
-        </select>
+  <h2 class="page-title">Study record</h2>
+  <div class="dashboard">
+    <!-- 左侧：日历 & 周标签 -->
+    <aside class="dashboard-sidebar">
+      <div class="calendar-container">
+        <h3>日历</h3>
+        <div id="calendar"></div>
       </div>
-      <canvas id="weeklyPieChart"></canvas>
-    </div>
-
-    <!-- 折线图：单周各次尝试数据 -->
-    <div class="chart-container">
-      <div class="chart-header">
-        <label for="weekMetricSelect">指标:</label>
-        <select id="weekMetricSelect">
-          <option value="score">得分</option>
-          <option value="accuracy">准确率</option>
-          <option value="time">用时</option>
-        </select>
+      <div class="tabs">
+        <div class="week-tabs" id="weekTabs"></div>
       </div>
-      <canvas id="weekLineChart"></canvas>
-    </div>
+    </aside>
 
-    <!-- 柱状图：周平均指标 -->
-    <div class="chart-container">
-      <div class="chart-header">
-        <label for="aggregateMetricSelect">指标:</label>
-        <select id="aggregateMetricSelect">
-          <option value="attempts">平均尝试次数</option>
-          <option value="accuracy">平均准确率</option>
-          <option value="time">平均用时</option>
-        </select>
+    <!-- 右侧：图表区 -->
+    <section class="dashboard-content">
+      <!-- 折线：单周各次尝试数据 -->
+      <div class="card chart-card">
+        <div class="card-header">
+          <span>Data of each attempt in a single week</span>
+          <select id="weekMetricSelect">
+            <option value="score">Score</option>
+            <option value="accuracy" selected>Accuracy</option>
+            <option value="time">Time</option>
+          </select>
+        </div>
+        <span class="card-value" id="progressValue">--</span>
+        <canvas id="weekLineChart"></canvas>
       </div>
-      <canvas id="aggregatedBarChart"></canvas>
-    </div>
-  </div>
 
-  <!-- 日历 -->
-  <div class="calendar-container">
-    <h3>日历</h3>
-    <div id="calendar"></div>
+      <!-- 柱状：周平均指标 -->
+      <div class="card chart-card">
+        <div class="card-header">
+          <span>Weekly average indicator</span>
+          <select id="aggregateMetricSelect">
+            <option value="attempts" selected>Average number of attempts</option>
+            <option value="accuracy">Average Accuracy</option>
+            <option value="time">Average Time</option>
+          </select>
+        </div>
+        <span class="card-value" id="tasksValue">--</span>
+        <canvas id="aggregatedBarChart"></canvas>
+      </div>
+
+      <!-- 分布柱状（原 Attempts Distribution） -->
+      <div class="card chart-card full-width">
+        <div class="card-header">
+          <span>Attempts Distribution</span>
+        </div>
+        <canvas id="bottomBarChart"></canvas>
+      </div>
+    </section>
   </div>
 </main>
+
 <script src="/student_record.bundle.js" defer></script>
 </body>
 </html>
