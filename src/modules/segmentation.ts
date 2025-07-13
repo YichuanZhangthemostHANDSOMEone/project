@@ -1,51 +1,60 @@
-// src/segmentation.ts
-import { FilesetResolver, ImageSegmenter } from '@mediapipe/tasks-vision';
-import { showMessage } from '@modules/ui';
+import { InferenceEngine, CVImage } from "inferencejs";
 
-const ROBOFLOW_API_KEY = process.env.ROBOFLOW_API_KEY;
-const MODEL_URL = `https://storage.googleapis.com/mediapipe-models/image_segmenter/deeplab_v3/float32/1/deeplab_v3.tflite?api_key=${ROBOFLOW_API_KEY}`;
-
-export class LegoSegmenter {
-  private segmenter?: any;
-
-  async init() {
-    try {
-      const vision = await FilesetResolver.forVisionTasks(
-          'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision/wasm'
-      );
-
-      this.segmenter = await ImageSegmenter.createFromOptions(vision, {
-        baseOptions: { modelAssetPath: MODEL_URL },
-        runningMode: 'IMAGE',
-        outputCategoryMask: true,
-        outputConfidenceMasks: false,
-        // 如果你需要多边形路径，可打开下一行
-        // outputPolygonMasks: true,
-      });
-    } catch (err) {
-      showMessage('Failed to load segmentation model');
-      throw err;
-    }
-  }
-
-  async segment(image: HTMLCanvasElement): Promise<any | null> {
-    if (!this.segmenter) return null;
-
-    const result = this.segmenter.segment(image);
-    if (!result || !result.categoryMask) {
-      console.warn('Segmentation returned no valid category mask');
-      return null;
-    }
-
-    // 检查是否含前景
-    const maskData = result.categoryMask.getAsUint8Array();
-    const hasForeground = maskData.some((v: number) => v > 0);
-    if (!hasForeground) {
-      console.warn('Segmentation mask contains only background pixels');
-      return null;
-    }
-
-    return result;
-  }
+export interface Prediction {
+  mask: string;         // Base64 PNG
+  polygon?: number[];   // 若需要多边形坐标
+  x: number;
+  y: number;
+  width: number;
+  height: number;
 }
 
+/**
+ * LegoSegmenter: 在线调用 Roboflow Serverless 分割模型
+ */
+export class LegoSegmenter {
+  private engine!: InferenceEngine;
+  private workerId!: string;
+
+  constructor(
+      private readonly modelSlug = "vetherblocks/lego-plate-segmentation",
+      private readonly version   = "1",
+      private readonly apiKey    = process.env.ROBOFLOW_API_KEY
+  ) {}
+
+  /**
+   * 初始化 InferenceJS 引擎并启动 worker
+   */
+  async init(): Promise<void> {
+    this.engine = new InferenceEngine();
+    this.workerId = await this.engine.startWorker(
+        this.modelSlug,
+        Number(this.version),
+        this.apiKey
+    );
+  }
+
+  /**
+   * 对 Canvas 分割，返回封装好的 Prediction 数组
+   */
+  async segment(
+      canvas: HTMLCanvasElement
+  ): Promise<Prediction[] | null> {
+    if (!this.engine || !this.workerId) return null;
+
+    // 转成 ImageBitmap → CVImage
+    const bitmap = await createImageBitmap(canvas);
+    const img    = new CVImage(bitmap);
+
+    // 调用 infer，不带额外 options
+    const rawResult = await this.engine.infer(this.workerId, img);
+
+    // TS: 强制转换为我们需要的格式
+    const preds = (rawResult as any).predictions as Prediction[];
+    if (!preds?.length) {
+      console.warn("No segmentation predictions from Roboflow");
+      return null;
+    }
+    return preds;
+  }
+}

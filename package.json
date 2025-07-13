@@ -31,6 +31,8 @@
     "color.js": "^1.2.0",
     "colorjs.io": "^0.5.2",
     "firebase": "^11.8.1",
-    "quantize": "^1.0.2"
+    "inferencejs": "^1.0.21",
+    "quantize": "^1.0.2",
+    "util": "^0.12.5"
   }
 }

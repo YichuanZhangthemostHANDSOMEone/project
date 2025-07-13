@@ -28,7 +28,8 @@ module.exports = {
             process: require.resolve('process/browser'),
             fs:      false,                              // 不提供 fs
             path:    require.resolve('path-browserify'), // 用 path-browserify 代替 path
-            crypto:  false                               // 浏览器环境不需要 crypto
+            crypto:  false,                               // 浏览器环境不需要 crypto
+            util: require.resolve("util/"),
         }
     },
 
