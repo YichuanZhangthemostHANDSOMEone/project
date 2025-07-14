@@ -19,9 +19,6 @@ interface PaletteColor {
   count: number;
 }
 
-/**
- * LegoPipeline: 使用新的 LegoSegmenter 获取预测 mask，并提取色块
- */
 export class LegoPipeline {
   constructor(private segmenter: LegoSegmenter) {}
 
@@ -29,7 +26,7 @@ export class LegoPipeline {
     // 1. 提取原始 RGB
     const rgbMat = this.canvasToRGBMat(canvas);
 
-    // 2. 调用新的 segmenter 获取 Prediction[]
+    // 2. 调用segmenter 获取 Prediction[]
     const preds = await this.segmenter.segment(canvas);
     if (!preds || preds.length === 0) {
       rgbMat.delete();
