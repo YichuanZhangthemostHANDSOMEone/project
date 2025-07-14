@@ -1,21 +1,240 @@
+
+
+<!--<!DOCTYPE html>-->
+<!--<html lang="zh">-->
+<!--<head>-->
+<!--  <meta charset="UTF-8" />-->
+<!--  <meta name="viewport" content="width=device-width,initial-scale=1" />-->
+<!--  <title>学生详情 | StudyTrack</title>-->
+<!--  -->
+<!--</head>-->
+<!--<body>-->
+<!--<div class="container">-->
+<!--  &lt;!&ndash; 侧边栏 &ndash;&gt;-->
+<!--  <aside class="sidebar">-->
+<!--    <div class="logo">-->
+<!--      <svg viewBox="0 0 24 24" width="24" height="24" fill="#4f46e5">-->
+<!--        <path d="M3 4v16h18V4H3zm16 14H5V6h14v12z"/>-->
+<!--        <path d="M7 8h10v2H7V8zm0 4h10v2H7v-2z"/>-->
+<!--      </svg>-->
+<!--      <span>StudyTrack</span>-->
+<!--    </div>-->
+<!--    <nav class="nav-menu">-->
+<!--      <ul>-->
+<!--        <li><a href="teacher_list.html">Students</a></li>-->
+<!--        <li class="active"><a href="#">My Profile</a></li>-->
+<!--        <li><a href="#">Settings</a></li>-->
+<!--        <li><a id="logoutBtn" href="#">Logout</a></li>-->
+<!--      </ul>-->
+<!--    </nav>-->
+<!--  </aside>-->
+
+<!--  &lt;!&ndash; 主区域 &ndash;&gt;-->
+<!--  <main class="main-content">-->
+<!--    &lt;!&ndash; 顶栏 &ndash;&gt;-->
+<!--    <header class="page-header">-->
+<!--      <div class="profile-title">-->
+<!--        <h1 id="studentName">—</h1>-->
+<!--        <p id="studentClass">—</p>-->
+<!--      </div>-->
+<!--      <div class="header-actions">-->
+<!--        <select id="weekSelector" class="select-week">-->
+<!--          <option value="all">All Weeks</option>-->
+<!--        </select>-->
+<!--      </div>-->
+<!--    </header>-->
+
+<!--    &lt;!&ndash; 概览卡片 &ndash;&gt;-->
+<!--    <section class="overview-panel">-->
+<!--      <div class="card profile-card">-->
+<!--        <div class="avatar">-->
+<!--          <svg viewBox="0 0 24 24" width="48" height="48" fill="#6366f1">-->
+<!--            <circle cx="12" cy="8" r="4"/>-->
+<!--            <path d="M6 20v-2c0-2.21 1.79-4 4-4h0c2.21 0 4 1.79 4 4v2"/>-->
+<!--          </svg>-->
+<!--        </div>-->
+<!--        <div class="info">-->
+<!--          <h2 id="studentName2">—</h2>-->
+<!--          <p id="studentRole">Student</p>-->
+<!--        </div>-->
+<!--        <div class="stats">-->
+<!--          <div class="mini-card">-->
+<!--            <h3>平均得分</h3>-->
+<!--            <p id="avgAccuracy">0%</p>-->
+<!--            <span id="accuracyTrend" class="trend up">+0%</span>-->
+<!--          </div>-->
+<!--          <div class="mini-card">-->
+<!--            <h3>总练习次数</h3>-->
+<!--            <p id="totalAttempts">0</p>-->
+<!--          </div>-->
+<!--          <div class="mini-card">-->
+<!--            <h3>本周进步</h3>-->
+<!--            <p id="weeklyProgress">+0%</p>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </section>-->
+
+<!--    &lt;!&ndash; 图表区 &ndash;&gt;-->
+<!--    <section class="charts-section">-->
+<!--      <div class="card chart-card">-->
+<!--        <h3>准确率 (%)</h3>-->
+<!--        <canvas id="accuracyChart"></canvas>-->
+<!--      </div>-->
+<!--      <div class="card chart-card">-->
+<!--        <h3>平均用时 (s)</h3>-->
+<!--        <canvas id="timeChart"></canvas>-->
+<!--      </div>-->
+<!--      <div class="card chart-card full-width">-->
+<!--        <h3>效率对比</h3>-->
+<!--        <canvas id="efficiencyChart"></canvas>-->
+<!--      </div>-->
+<!--    </section>-->
+
+<!--    &lt;!&ndash; 日历 & 活跃度（饼图） &ndash;&gt;-->
+<!--    <section class="lower-section">-->
+<!--      <div class="card calendar-card">-->
+<!--        <h3>Calendar</h3>-->
+<!--        <table class="calendar-table" id="calendarTable"></table>-->
+<!--      </div>-->
+<!--      <div class="card activity-card">-->
+<!--        <h3>活跃度统计（按周次分布）</h3>-->
+<!--        <canvas id="activityChart"></canvas>-->
+<!--      </div>-->
+<!--    </section>-->
+
+<!--    &lt;!&ndash; 排行榜 &ndash;&gt;-->
+<!--    <section class="leaderboard-card card">-->
+<!--      <h3>周主题排行榜</h3>-->
+<!--      <table class="leaderboard-table">-->
+<!--        <thead>-->
+<!--        <tr><th>Rank</th><th>Student</th><th>Score</th></tr>-->
+<!--        </thead>-->
+<!--        <tbody id="leaderboardBody"></tbody>-->
+<!--      </table>-->
+<!--    </section>-->
+<!--  </main>-->
+<!--</div>-->
+
+<!--<script src="/teacher_record.bundle.js" defer></script>-->
+<!--</body>-->
+<!--</html>-->
 <!DOCTYPE html>
 <html lang="zh">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Study record | Teacher</title>
+  <title>学生详情 | StudyTrack</title>
+
 </head>
 <body>
-<header class="topbar">
-  <div class="logo">Lego Network Analyzer</div>
-  <nav class="main-nav"><a href="/">Home</a></nav>
-  <button id="logoutBtn" class="btn-primary">Logout</button>
-</header>
-<main class="main-content">
-  <h2>Student Testing record</h2>
-  <canvas id="scoreChart" width="400" height="200"></canvas>
-  <canvas id="timeChart" width="400" height="200"></canvas>
-</main>
+<div class="container">
+  <!-- 侧边栏 -->
+  <aside class="sidebar">
+    <div class="logo">
+      <svg viewBox="0 0 24 24" width="24" height="24" fill="#4f46e5">
+        <path d="M3 4v16h18V4H3zm16 14H5V6h14v12z"/>
+        <path d="M7 8h10v2H7V8zm0 4h10v2H7v-2z"/>
+      </svg>
+      <span>StudyTrack</span>
+    </div>
+    <nav class="nav-menu">
+      <ul>
+        <li><a href="teacher_list.html">Students</a></li>
+        <li class="active"><a href="#">My Profile</a></li>
+        <li><a href="#">Settings</a></li>
+        <li><a id="logoutBtn" href="#">Logout</a></li>
+      </ul>
+    </nav>
+  </aside>
+
+  <!-- 主区域 -->
+  <main class="main-content">
+    <!-- 顶栏 -->
+    <header class="page-header">
+      <div class="profile-title">
+        <h1 id="studentName">—</h1>
+        <p id="studentClass">—</p>
+      </div>
+      <div class="header-actions">
+        <select id="weekSelector" class="select-week">
+          <option value="all">All Weeks</option>
+        </select>
+      </div>
+    </header>
+
+    <!-- 概览卡片 -->
+    <section class="overview-panel">
+      <div class="card profile-card">
+        <div class="avatar">
+          <svg viewBox="0 0 24 24" width="48" height="48" fill="#6366f1">
+            <circle cx="12" cy="8" r="4"/>
+            <path d="M6 20v-2c0-2.21 1.79-4 4-4h0c2.21 0 4 1.79 4 4v2"/>
+          </svg>
+        </div>
+        <div class="info">
+          <h2 id="studentName2">—</h2>
+          <p id="studentRole">Student</p>
+        </div>
+        <div class="stats">
+          <div class="mini-card">
+            <h3>平均得分</h3>
+            <p id="avgAccuracy">0%</p>
+            <span id="accuracyTrend" class="trend up">+0%</span>
+          </div>
+          <div class="mini-card">
+            <h3>总练习次数</h3>
+            <p id="totalAttempts">0</p>
+          </div>
+          <div class="mini-card">
+            <h3>本周进步</h3>
+            <p id="weeklyProgress">+0%</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 图表区 -->
+    <section class="charts-section">
+      <div class="card chart-card chart-wide">
+        <h3>准确率 (%)</h3>
+        <canvas id="accuracyChart"></canvas>
+      </div>
+      <div class="card chart-card chart-wide">
+        <h3>平均用时 (s)</h3>
+        <canvas id="timeChart"></canvas>
+      </div>
+      <div class="card chart-card chart-full">
+        <h3>效率对比</h3>
+        <canvas id="efficiencyChart"></canvas>
+      </div>
+    </section>
+
+    <!-- 日历 & 活跃度（饼图） -->
+    <section class="lower-section">
+      <div class="card calendar-card">
+        <h3>Calendar</h3>
+        <table class="calendar-table" id="calendarTable"></table>
+      </div>
+      <div class="card activity-card">
+        <h3>活跃度统计（按周次分布）</h3>
+        <canvas id="activityChart"></canvas>
+      </div>
+    </section>
+
+    <!-- 排行榜 -->
+    <section class="leaderboard-card card">
+      <h3>周主题排行榜</h3>
+      <table class="leaderboard-table">
+        <thead>
+        <tr><th>Rank</th><th>Student</th><th>Score</th></tr>
+        </thead>
+        <tbody id="leaderboardBody"></tbody>
+      </table>
+    </section>
+  </main>
+</div>
+
 <script src="/teacher_record.bundle.js" defer></script>
 </body>
 </html>

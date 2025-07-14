@@ -141,13 +141,16 @@ window.addEventListener('DOMContentLoaded', () => {
     };
 
     // —— 学习记录按钮：学生 vs 教师 ——
-    recordBtn.onclick = async (e) => {
+    // 新：老师先到列表页，再从列表点人进入详情
+    recordBtn.onclick = async e => {
       e.preventDefault();
       const fresh = await getDoc(userRef);
       const role  = fresh.exists() ? (fresh.data() as any).role : 'student';
-      window.location.href = role === 'teacher'
-          ? '/teacher_record.html'
-          : '/student_record.html';
+      if (role === 'teacher') {
+        window.location.href = '/teacher_list.html';
+      } else {
+        window.location.href = '/student_record.html';
+      }
     };
 
     // —— Quiz / 编辑按钮 ——

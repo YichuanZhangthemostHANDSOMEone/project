@@ -1,89 +1,138 @@
 
 
 <!--<!DOCTYPE html>-->
-<!--<html lang="en">-->
+<!--<html lang="zh">-->
 <!--<head>-->
 <!--  <meta charset="UTF-8" />-->
 <!--  <meta name="viewport" content="width=device-width,initial-scale=1" />-->
 <!--  <title>Register | Lego Network Analyzer</title>-->
-
 <!--</head>-->
 <!--<body>-->
 <!--<header class="topbar">-->
 <!--  <div class="logo">Lego Network Analyzer</div>-->
 <!--  <nav class="main-nav">-->
 <!--    <a href="/">Home</a>-->
-<!--    <a href="/services">Services</a>-->
-<!--    <a href="/about">About Us</a>-->
+<!--    <a href="/services">Service</a>-->
+<!--    <a href="/about">About us</a>-->
 <!--  </nav>-->
 <!--  <button id="loginBtn" class="btn-primary">Login</button>-->
 <!--</header>-->
 
 <!--<main class="main-content">-->
 <!--  <div class="card" style="max-width:400px; margin:2rem auto;">-->
-<!--    <h3>Create Account</h3>-->
+<!--    <h3>Create account</h3>-->
 <!--    <form id="registerForm" novalidate>-->
+<!--      <div class="input-group">-->
+<!--        <input type="text" id="nameInput" placeholder="Name" required />-->
+<!--      </div>-->
 <!--      <div class="input-group">-->
 <!--        <input type="email" id="email" placeholder="Email" required />-->
 <!--      </div>-->
 <!--      <div class="input-group">-->
-<!--        <input type="password" id="password" placeholder="Password" required />-->
+<!--        <input type="password" id="password" placeholder="password" required />-->
+<!--      </div>-->
+<!--      <div class="input-group">-->
+<!--        <select id="roleSelect" required>-->
+<!--          <option value="student">Student</option>-->
+<!--          <option value="teacher">Teacher</option>-->
+<!--        </select>-->
 <!--      </div>-->
 <!--      <button type="submit" class="btn-primary" style="width:100%;">Register</button>-->
 <!--    </form>-->
 <!--    <p style="text-align:center; margin-top:1rem;">-->
-<!--      Already have an account? <a href="/login.html">Login</a>-->
+<!--      Existing account？<a href="/login.html">Login</a>-->
 <!--    </p>-->
 <!--  </div>-->
 <!--</main>-->
-<!--<script src="/register.bundle.js"></script>-->
+<!--<script src="/register.bundle.js" defer></script>-->
 <!--</body>-->
 <!--</html>-->
-
 <!DOCTYPE html>
-<html lang="zh">
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <title>Register | Lego Network Analyzer</title>
-</head>
-<body>
-<header class="topbar">
-  <div class="logo">Lego Network Analyzer</div>
-  <nav class="main-nav">
-    <a href="/">Home</a>
-    <a href="/services">Service</a>
-    <a href="/about">About us</a>
-  </nav>
-  <button id="loginBtn" class="btn-primary">Login</button>
-</header>
 
-<main class="main-content">
-  <div class="card" style="max-width:400px; margin:2rem auto;">
-    <h3>Create account</h3>
-    <form id="registerForm" novalidate>
-      <div class="input-group">
-        <input type="text" id="nameInput" placeholder="Name" required />
-      </div>
-      <div class="input-group">
-        <input type="email" id="email" placeholder="Email" required />
-      </div>
-      <div class="input-group">
-        <input type="password" id="password" placeholder="password" required />
-      </div>
-      <div class="input-group">
-        <select id="roleSelect" required>
-          <option value="student">Student</option>
-          <option value="teacher">Teacher</option>
-        </select>
-      </div>
-      <button type="submit" class="btn-primary" style="width:100%;">Register</button>
+</head>
+<body class="auth-page">
+<!-- 左侧侧边栏 + 宣传 -->
+<!--<aside class="auth-sidebar">-->
+<!--  <div class="sidebar-logo">-->
+<!--    <svg viewBox="0 0 24 24" width="32" height="32" fill="#6366f1">-->
+<!--      <path d="M12 2l4 4-4 4-4-4zM4 10l4 4-4 4-4-4zm16 0l4 4-4 4-4-4z"/>-->
+<!--    </svg>-->
+<!--    <span>Lego Network Analyzer</span>-->
+<!--  </div>-->
+<!--  <nav class="sidebar-nav-vertical">-->
+<!--    <a href="/">-->
+<!--      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">-->
+<!--        <path d="M3 12l9-9 9 9"/><path d="M9 21V12h6v9"/>-->
+<!--      </svg>-->
+<!--      Home-->
+<!--    </a>-->
+<!--    <a href="/services">-->
+<!--      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">-->
+<!--        <circle cx="12" cy="12" r="3"/>-->
+<!--        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06 ..." />-->
+<!--      </svg>-->
+<!--      Service-->
+<!--    </a>-->
+<!--    <a href="/about">-->
+<!--      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">-->
+<!--        <circle cx="12" cy="12" r="10"/>-->
+<!--        <line x1="12" y1="16" x2="12" y2="12"/>-->
+<!--        <line x1="12" y1="8" x2="12.01" y2="8"/>-->
+<!--      </svg>-->
+<!--      About us-->
+<!--    </a>-->
+<!--  </nav>-->
+<!--  <div class="sidebar-promo">-->
+<!--    <h2>Unlock Insights.<br/>Build Connections.</h2>-->
+<!--    <p>Join our community and start analyzing network data with the power and simplicity of Lego.</p>-->
+<!--  </div>-->
+<!--</aside>-->
+
+<!-- 右侧注册卡片 -->
+<main class="auth-container">
+  <div class="auth-card register-card">
+    <h1>Create account</h1>
+    <p>Let’s get you started!</p>
+
+    <form id="registerForm">
+      <input type="text" id="nameInput" placeholder="Name" required/>
+      <input type="email" id="emailInput" placeholder="Email" required/>
+      <input type="password" id="passwordInput" placeholder="Password" required/>
+      <select id="roleSelect">
+        <option value="student">Student</option>
+        <option value="teacher">Teacher</option>
+      </select>
+      <button type="submit" class="btn-primary">Register</button>
     </form>
-    <p style="text-align:center; margin-top:1rem;">
-      Existing account？<a href="/login.html">Login</a>
+
+    <p class="switch-text">
+      Existing account? <a href="/login.html">Login</a>
     </p>
+
+    <div class="register-foot">
+      <div class="foot-item">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="#10b981">
+          <path d="M9 12l2 2 4-4"/>
+        </svg>
+        <span>Secure Sign-up</span>
+      </div>
+      <div class="foot-item">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="#3b82f6">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="12" y1="8" x2="12" y2="12"/>
+          <line x1="12" y1="16" x2="12.01" y2="16"/>
+        </svg>
+        <span>Privacy Assured</span>
+      </div>
+    </div>
   </div>
 </main>
+
 <script src="/register.bundle.js" defer></script>
 </body>
 </html>

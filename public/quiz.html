@@ -70,14 +70,21 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <title>Quiz | Lego Network Analyzer</title>
-
+  <link rel="stylesheet" href="styles.css"/>
 </head>
 <body>
+<!-- 顶部导航 -->
 <header class="topbar">
-  <div class="logo">Lego Network Analyzer</div>
+  <div class="logo">
+    <!-- 网络结构图标 -->
+    <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+      <path d="M12 2L8 6v4H4l4 4-4 4h4v4l4 4 4-4v-4h4l-4-4 4-4h-4V6l-4-4z"/>
+    </svg>
+    Lego Network Analyzer
+  </div>
   <nav class="main-nav">
     <a href="/">Home</a>
     <a href="/services">Services</a>
@@ -86,42 +93,59 @@
   <button id="authBtn" class="btn-primary">Logout</button>
 </header>
 
+<!-- 测验主体 -->
+<main class="quiz-container">
+  <section class="quiz-card">
+    <!-- 计时 & 题数 -->
+    <div class="quiz-header">
+      <div class="timer">
+        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" fill="none" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round"
+                d="M12 6v6l4 2M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2z"/>
+        </svg>
+        <span id="time">40</span>s
+      </div>
+      <div class="question-counter">
+        Question <span id="counter">1</span> / <span id="total">5</span>
+      </div>
+    </div>
 
-<!-- 一定要有 id="quizContainer" -->
-<div id="quizContainer" class="layout">
-  <aside class="sidebar">…</aside>
-  <main class="main-content">
-    <section class="card quiz-section animated-quiz" style="max-width:600px; margin:auto;">
-      <div id="timer" class="timer">
-        ⏳ <span id="time">40</span>s
-      </div>
-      <div class="question-card">
-        <!-- 一定要有 id="prompt" -->
-        <h2 id="prompt" class="question-text"></h2>
-      </div>
-      <div class="options">
-        <button class="option-btn" data-index="0">A</button>
-        <button class="option-btn" data-index="1">B</button>
-        <button class="option-btn" data-index="2">C</button>
-        <button class="option-btn" data-index="3">D</button>
-      </div>
-      <div class="nav-arrows">
-        <button id="prevBtn" class="btn-secondary">← Prev</button>
-        <button id="nextBtn" class="btn-secondary">Next →</button>
-      </div>
+    <!-- 题干 -->
+    <h1 id="prompt" class="quiz-prompt">How many layers does the OSI model have?</h1>
 
-      <!-- 新增：进度计数 & 进度条 -->
-      <div class="progress-card">
-        <div id="counter" class="counter">0 / 0</div>
-        <div class="progress-bar">
-          <div class="progress"></div>
-        </div>
-      </div>
-    </section>
-  </main>
-</div>
+    <!-- 选项 -->
+    <div class="options">
+      <button class="option-btn" data-index="0">4</button>
+      <button class="option-btn" data-index="1">6</button>
+      <button class="option-btn selected" data-index="2">7</button>
+      <button class="option-btn" data-index="3">9</button>
+    </div>
 
-<!-- 延迟执行，保证上面的所有节点都已解析 -->
+    <!-- 进度条 -->
+    <div class="progress-bar-container">
+      <div class="progress-bar">
+        <div class="progress" style="width:20%"></div>
+      </div>
+    </div>
+
+    <!-- 翻页按钮 -->
+    <div class="quiz-nav">
+      <button id="prevBtn" class="btn-secondary">
+        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" fill="none" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
+        </svg>
+        Prev
+      </button>
+      <button id="nextBtn" class="btn-primary">
+        Next
+        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" fill="none" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+        </svg>
+      </button>
+    </div>
+  </section>
+</main>
+
 <script src="/quiz.bundle.js" defer></script>
 </body>
 </html>

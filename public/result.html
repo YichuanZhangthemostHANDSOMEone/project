@@ -74,66 +74,124 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Quiz Results | Lego Network Analyzer</title>
-
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-<!-- 顶部导航 -->
-<header class="topbar">
-  <div class="logo">Lego Network Analyzer</div>
-  <nav class="main-nav">
-    <a href="/">Home</a>
-    <a href="/services">Services</a>
-    <a href="/about">About Us</a>
-  </nav>
-  <button id="authBtn" class="btn btn-primary">Logout</button>
-</header>
-
-<div class="layout">
-  <!-- 侧边栏 -->
+<div class="container">
+  <!-- 左侧侧边栏 -->
   <aside class="sidebar">
-    <ul>
-      <li><a href="/"><span class="icon">🏠</span>AR Tool</a></li>
-      <li class="active"><span class="icon">🏆</span>Results</li>
-    </ul>
+    <div class="sidebar-logo">
+      <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+        <path d="M12 2L8 6v4H4l4 4-4 4h4v4l4 4 4-4v-4h4l-4-4 4-4h-4V6l-4-4z"/>
+      </svg>
+      <span>Lego Network Analyzer</span>
+    </div>
+    <nav class="sidebar-nav">
+      <ul>
+        <li><a href="/"><svg viewBox="0 0 24 24" width="20" height="20"><path d="M3 12l9-9 9 9"/><path d="M9 21V12h6v9"/></svg>AR Tool</a></li>
+        <li class="active"><a href="#"><svg viewBox="0 0 24 24" width="20" height="20"><path d="M12 2l4 4-4 4-4-4zM4 10l4 4-4 4-4-4zM20 10l-4 4 4 4 4-4z"/></svg>Results</a></li>
+        <li><a href="/settings"><svg viewBox="0 0 24 24" width="20" height="20"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06"/><path d="M4.6 9a1.65 1.65 0 0 1-.33-1.82l-.06-.06"/></svg>Settings</a></li>
+        <li><a href="/help"><svg viewBox="0 0 24 24" width="20" height="20"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>Help &amp; Support</a></li>
+      </ul>
+    </nav>
   </aside>
 
-  <!-- 主内容 -->
+  <!-- 主区域 -->
   <main class="main-content">
+    <!-- 顶部导航 -->
+    <header class="header-nav">
+      <div class="nav-left"></div>
+      <nav class="topnav">
+        <a href="/">Home</a>
+        <a href="/services">Services</a>
+        <a href="/about">About Us</a>
+      </nav>
+      <div class="nav-right">
+        <button class="btn-icon bell">
+          <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" fill="none" stroke-width="2">
+            <path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/>
+            <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+          </svg>
+        </button>
+        <button id="authBtn" class="btn-primary">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+            <polyline points="16 17 21 12 16 7"/>
+            <line x1="21" y1="12" x2="9" y2="12"/>
+          </svg>
+          Logout
+        </button>
+      </div>
+    </header>
+
+    <!-- 结果卡片 -->
     <section class="result-section">
-      <div class="score-card">
-        <h2>Congratulations!</h2>
-        <!-- 环形进度条 -->
+      <div class="result-card">
+        <div class="trophy-icon">
+          <svg viewBox="0 0 24 24" width="32" height="32" fill="currentColor">
+            <path d="M8 2h8l1 7H7L8 2zM5 9v4c0 5 2 8 7 8s7-3 7-8V9H5z"/>
+          </svg>
+        </div>
+        <h1>Congratulations!</h1>
+        <p>You have completed the quiz.</p>
+
+        <!-- 圆环进度 -->
         <div class="circle-progress">
           <svg viewBox="0 0 150 150">
-            <circle cx="75" cy="75" r="70"></circle>
-            <circle class="progress" cx="75" cy="75" r="70"></circle>
+            <circle cx="75" cy="75" r="70" class="bg"></circle>
+            <circle cx="75" cy="75" r="70" class="progress"></circle>
           </svg>
           <div class="percent" id="percent">0%</div>
         </div>
-        <!-- 得分文字 -->
-        <div class="score-text" id="score">0 / 0</div>
+
+        <div class="score-text" id="score">0 / 0 correct</div>
       </div>
 
-      <!-- 详细统计 -->
-      <div class="stats">
+      <!-- 统计卡片 -->
+      <div class="stats-cards">
         <div class="stat-card">
-          <h3>Total Time</h3>
-          <p id="time">0s</p>
+          <div class="stat-icon">
+            <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" fill="none" stroke-width="2">
+              <path d="M12 6v6l4 2M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2z"/>
+            </svg>
+          </div>
+          <div class="stat-info">
+            <div class="stat-title">Total Time</div>
+            <div class="stat-value" id="time">0s</div>
+          </div>
         </div>
+
         <div class="stat-card">
-          <h3>Accuracy</h3>
-          <p id="acc">0%</p>
+          <div class="stat-icon success">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+          </div>
+          <div class="stat-info">
+            <div class="stat-title">Accuracy</div>
+            <div class="stat-value" id="acc">0%</div>
+          </div>
         </div>
+
         <div class="stat-card">
-          <h3>Suggestion</h3>
-          <p id="suggestion">–</p>
+          <div class="stat-icon suggestion">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/>
+              <line x1="12" y1="8" x2="12" y2="12"/>
+              <line x1="12" y1="16" x2="12.01" y2="16"/>
+            </svg>
+          </div>
+          <div class="stat-info">
+            <div class="stat-title">Suggestion</div>
+            <div class="stat-value" id="suggestion">–</div>
+          </div>
         </div>
       </div>
 
       <!-- 操作按钮 -->
       <div class="actions">
-        <button id="retakeBtn" class="btn btn-secondary">Retake Quiz</button>
-        <button id="homeBtn" class="btn btn-primary">Back to Home</button>
+        <button id="retakeBtn" class="btn-secondary">Retake Quiz</button>
+        <button id="homeBtn" class="btn-primary">Back to Home</button>
       </div>
     </section>
   </main>
