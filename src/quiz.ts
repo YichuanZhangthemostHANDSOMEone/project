@@ -351,7 +351,7 @@ async function navigate(delta: number) {
                 );
             }
         } catch (err) {
-            console.error('保存测验记录失败：', err);
+            console.error('Failed to save the test record：', err);
         }
 
         window.location.href = '/result.html';
@@ -415,10 +415,10 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('prevBtn')?.addEventListener('click', () => navigate(-1));
             document.getElementById('nextBtn')?.addEventListener('click', () => navigate(1));
         } catch (err) {
-            console.error('加载题目出错：', err);
+            console.error('loading question failed：', err);
             document.getElementById('quizContainer')!.innerHTML =
                 `<p style="padding:1rem; text-align:center; color:red;">
-           加载题目失败，请检查网络或权限设置
+           Loading the question failed. Please check your network connection or permission settings.
          </p>`;
         }
     });

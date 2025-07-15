@@ -155,12 +155,12 @@ window.addEventListener('DOMContentLoaded', () => {
 
     // —— Quiz / 编辑按钮 ——
     if (isTeacher) {
-      quizBtn.textContent = '题库编辑';
+      quizBtn.textContent = 'Quiz Edit';
       bindButton(quizBtn, () => {
         window.location.href = '/quiz_editor.html';
       });
     } else {
-      quizBtn.textContent = '开始测验';
+      quizBtn.textContent = 'Start Quiz';
       bindButton(quizBtn, () => {
         window.location.href = '/topics.html';
       });
@@ -168,7 +168,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
     // —— AR 扫描功能 ——
     if (!captureCanvas) {
-      console.error('❌ 找不到 <canvas id="capture">');
+      console.error('❌ Cannot find <canvas id="capture">');
       return;
     }
     const app = new VisionApp(videoEl, captureCanvas);

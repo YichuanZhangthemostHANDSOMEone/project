@@ -423,7 +423,7 @@ document.addEventListener('DOMContentLoaded', () => {
         query(collection(db, 'users'), where('email','==', email))
     )
     if (userSnap.empty) {
-      alert(`未找到学生邮箱：${email}`)
+      alert(`Student email not found：${email}`)
       location.href = 'teacher_list.html'
       return
     }
@@ -522,7 +522,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('accuracyChart') as HTMLCanvasElement,
         {
           type:'line',
-          data:{ labels, datasets:[{ label:'准确率 (%)', data:acc, tension:0.3 }]},
+          data:{ labels, datasets:[{ label:'Accuracy (%)', data:acc, tension:0.3 }]},
           options:{ scales:{ y:{ beginAtZero:true, max:100 }}}
         }
     )
@@ -530,7 +530,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('timeChart') as HTMLCanvasElement,
         {
           type:'bar',
-          data:{ labels, datasets:[{ label:'平均用时 (s)', data:time, backgroundColor:'#c7d2fe' }]},
+          data:{ labels, datasets:[{ label:'Average spending time (s)', data:time, backgroundColor:'#c7d2fe' }]},
           options:{ scales:{ y:{ beginAtZero:true }}}
         }
     )
@@ -538,8 +538,8 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('efficiencyChart') as HTMLCanvasElement,
         {
           data:{ labels, datasets:[
-              { type:'line', label:'准确率 (%)', yAxisID:'y1', data:acc },
-              { type:'line', label:'用时 (s)',   yAxisID:'y2', data:time }
+              { type:'line', label:'Accuracy (%)', yAxisID:'y1', data:acc },
+              { type:'line', label:'Time (s)',   yAxisID:'y2', data:time }
             ]},
           options:{ scales:{
               y1:{ position:'left', beginAtZero:true, max:100 },
@@ -562,7 +562,7 @@ document.addEventListener('DOMContentLoaded', () => {
       data: {
         labels,
         datasets: [{
-          label: '每周练习次数',
+          label: 'Number of practices per week',
           data,
           fill: false,
           tension: 0.3,
@@ -613,7 +613,7 @@ document.addEventListener('DOMContentLoaded', () => {
     })
     const email = new URLSearchParams(location.search).get('user')
     if(!email){
-      alert('缺少学生邮箱参数')
+      alert('Missing student email parameters')
       location.href='teacher_list.html'
       return
     }

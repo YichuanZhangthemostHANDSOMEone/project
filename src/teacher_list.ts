@@ -293,6 +293,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Filter（可自行实现）
     filterBtn?.addEventListener('click', () => {
-        alert('Filter 功能待实现');
+        alert('The Filter function is yet to be implemented.');
     });
 });

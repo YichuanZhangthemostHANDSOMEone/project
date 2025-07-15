@@ -228,7 +228,7 @@ window.addEventListener('DOMContentLoaded', () => {
             const cred = await signInWithPopup(auth, provider);
             await redirectAfterLogin(cred);
         } catch (err: any) {
-            alert('Google 登录失败：' + err.message);
+            alert('Google log fail!!：' + err.message);
         }
     });
 
