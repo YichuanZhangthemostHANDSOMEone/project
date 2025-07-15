@@ -20,6 +20,7 @@
     "style-loader": "^4.0.0",
     "ts-loader": "^9.5.2",
     "typescript": "^5.8.3",
+    "util": "^0.12.5",
     "webpack": "^5.99.9",
     "webpack-cli": "^6.0.1",
     "webpack-dev-server": "^5.2.2"
@@ -28,11 +29,11 @@
   "dependencies": {
     "@mediapipe/tasks-vision": "^0.10.22-rc.20250304",
     "@techstark/opencv-js": "^4.10.0-release.1",
+    "axios": "^1.10.0",
     "color.js": "^1.2.0",
     "colorjs.io": "^0.5.2",
     "firebase": "^11.8.1",
     "inferencejs": "^1.0.21",
-    "quantize": "^1.0.2",
-    "util": "^0.12.5"
+    "quantize": "^1.0.2"
   }
 }

@@ -27,8 +27,11 @@ export class LegoPipeline {
     const rgbMat = this.canvasToRGBMat(canvas);
 
     // 2. 调用segmenter 获取 Prediction[]
+    console.log('🔍 [Pipeline] Calling segmenter...');
     const preds = await this.segmenter.segment(canvas);
+    console.log('🔍 [Pipeline] segmenter.predictions =', preds);
     if (!preds || preds.length === 0) {
+      console.warn('⚠️ [Pipeline] No predictions returned');
       rgbMat.delete();
       return [];
     }

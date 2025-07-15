@@ -1,19 +1,19 @@
-
+// src/index.ts
 import { VisionApp } from '@modules/vision';
 import './styles.css';
 import { bindButton, showMessage, showProcessingSpinner } from '@modules/ui';
-import './styles.css';
+
 console.log('🚀 DOMContentLoaded 触发');
 window.addEventListener('DOMContentLoaded', async () => {
   console.log('页面初始化开始');
-  const video = document.getElementById('video') as HTMLVideoElement;
-  const capture = document.getElementById('capture') as HTMLCanvasElement;
+  const video      = document.getElementById('video')      as HTMLVideoElement;
+  const capture    = document.getElementById('capture')    as HTMLCanvasElement;
   const captureBtn = document.getElementById('captureBtn') as HTMLButtonElement;
-  const quizBtn = document.getElementById('quizBtn') as HTMLButtonElement;
-  const overlay = document.getElementById('overlay') as HTMLCanvasElement;
+  const quizBtn    = document.getElementById('quizBtn')    as HTMLButtonElement;
+  const overlay    = document.getElementById('overlay')    as HTMLCanvasElement;
+
   const app = new VisionApp(video, capture, overlay);
 
-  // const app = new VisionApp(video, canvas);
   try {
     await app.start();
     showMessage('Camera ready. Click capture to analyze.');
@@ -26,11 +26,24 @@ window.addEventListener('DOMContentLoaded', async () => {
     let timer: any;
     try {
       timer = setTimeout(() => showProcessingSpinner(true), 500);
-      const { image } = await app.analyzeAndExport();
+
+      // —— 这里改动 ——
+      // 1) 同时拿到 image 和 blocks
+      const { image, blocks } = await app.analyzeAndExport();
+      // 2) 打印日志
+      console.log('【主页面】导出 image 长度：', image.length);
+      console.log('【主页面】识别到的 blocks：', blocks);
+      // —— 结束改动 ——
+
       clearTimeout(timer);
       showProcessingSpinner(false);
-      sessionStorage.setItem('legoResultImage', image);
-      window.location.href = '/lego-result.html';
+
+      // // 存储到 sessionStorage
+      // sessionStorage.setItem('legoResultImage', image);
+      // // —— 同时存储 blocks
+      // sessionStorage.setItem('legoResultBlocks', JSON.stringify(blocks));
+      //
+      // window.location.href = '/lego-result.html';
     } catch (error) {
       clearTimeout(timer);
       showProcessingSpinner(false);
@@ -39,17 +52,15 @@ window.addEventListener('DOMContentLoaded', async () => {
     }
   });
 
-  // 统一使用 bindButton 来绑定 quizBtn 的点击事件
   bindButton(quizBtn, () => {
     window.location.href = '/topics.html';
   });
 
   const quizPrompt = document.querySelector('.quiz-prompt') as HTMLElement;
   if (quizPrompt) {
-    quizPrompt.classList.add('clickable'); // 使用 CSS 类名代替直接样式修改
+    quizPrompt.classList.add('clickable');
     quizPrompt.addEventListener('click', () => {
       window.location.href = '/topics.html';
     });
   }
 });
-

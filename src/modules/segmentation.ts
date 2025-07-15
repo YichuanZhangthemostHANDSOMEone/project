@@ -1,58 +1,59 @@
-import { InferenceEngine, CVImage } from "inferencejs";
+// src/modules/segmentation.ts
+
+// 让 TS 知道 process.env.ROBOFLOW_API_KEY 存在
+declare const process: {
+  env: {
+    ROBOFLOW_API_KEY: string;
+  };
+};
 
 export interface Prediction {
-  mask: string;         // Base64 PNG
-  polygon?: number[];   // 若需要多边形坐标
-  x: number;
-  y: number;
-  width: number;
-  height: number;
+  mask:    string;      // data:image/png;base64,...
+  polygon?: number[];   // optional
+  x:       number;
+  y:       number;
+  width:   number;
+  height:  number;
 }
 
-/**
- * LegoSegmenter: 在线调用 Roboflow Serverless 分割模型
- */
 export class LegoSegmenter {
-  private engine!: InferenceEngine;
-  private workerId!: string;
+  // 从环境变量读取，不要直接写硬编码
+  private readonly apiKey    = process.env.ROBOFLOW_API_KEY;
+  private readonly modelSlug = 'vetherblocks/lego-plate-segmentation';
+  private readonly version   = 1;
 
-  constructor(
-      private readonly modelSlug = "vetherblocks/lego-plate-segmentation",
-      private readonly version   = "1",
-      private readonly apiKey    = process.env.ROBOFLOW_API_KEY
-  ) {}
+  async segment(canvas: HTMLCanvasElement): Promise<Prediction[]|null> {
+    if (!this.apiKey) {
+      throw new Error('Missing ROBOFLOW_API_KEY in process.env');
+    }
 
-  /**
-   * 初始化 InferenceJS 引擎并启动 worker
-   */
-  async init(): Promise<void> {
-    this.engine = new InferenceEngine();
-    this.workerId = await this.engine.startWorker(
-        this.modelSlug,
-        Number(this.version),
-        this.apiKey
-    );
-  }
+    // 1. Canvas → JPEG Base64，去掉前缀
+    const dataURL = canvas.toDataURL('image/jpeg', 0.8);
+    const base64  = dataURL.split(',')[1];
 
-  /**
-   * 对 Canvas 分割，返回封装好的 Prediction 数组
-   */
-  async segment(
-      canvas: HTMLCanvasElement
-  ): Promise<Prediction[] | null> {
-    if (!this.engine || !this.workerId) return null;
+    // 2. 拼接 Serverless API URL
+    const url =
+        `https://serverless.roboflow.com/` +
+        `${this.modelSlug}/${this.version}` +
+        `?api_key=${this.apiKey}` +
+        `&format=masks`;
 
-    // 转成 ImageBitmap → CVImage
-    const bitmap = await createImageBitmap(canvas);
-    const img    = new CVImage(bitmap);
+    // 3. 直接用 fetch 发 simple POST（不带任何额外 headers）
+    const resp = await fetch(url, {
+      method: 'POST',
+      body: base64
+    });
 
-    // 调用 infer，不带额外 options
-    const rawResult = await this.engine.infer(this.workerId, img);
+    if (!resp.ok) {
+      console.error(`Roboflow API 请求失败: ${resp.status} ${resp.statusText}`);
+      return null;
+    }
 
-    // TS: 强制转换为我们需要的格式
-    const preds = (rawResult as any).predictions as Prediction[];
-    if (!preds?.length) {
-      console.warn("No segmentation predictions from Roboflow");
+    // 4. 解析返回
+    const json = await resp.json();
+    const preds = (json.predictions || []) as Prediction[];
+    if (!preds.length) {
+      console.warn('Roboflow 返回空 predictions');
       return null;
     }
     return preds;
