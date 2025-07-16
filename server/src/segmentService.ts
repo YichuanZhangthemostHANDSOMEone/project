@@ -5,7 +5,7 @@ import axios from 'axios';
 import dotenv from 'dotenv';
 import path from 'path';
 
-dotenv.config({ path: path.resolve(__dirname, '../../.env') });
+dotenv.config({ path: path.resolve(__dirname, 'D:\\PasageToRICH\\CP3407\\assignment\\project\\.env') });
 
 const ROBOFLOW_API_KEY = process.env.ROBOFLOW_API_KEY;
 
@@ -22,8 +22,11 @@ app.post('/api/segment', async (req, res) => {
   const url = `https://segment.roboflow.com/vetherblocks/lego-plate-segmentation/1?api_key=${ROBOFLOW_API_KEY}&format=masks`;
 
   try {
-    const response = await axios.post(url, imageBase64, {
-      headers: { 'Content-Type': 'text/plain' }
+    // 1) 把 Base64 解成 Buffer
+    const buffer = Buffer.from(imageBase64, 'base64');
+// 2) 用二进制流方式发
+    const response = await axios.post(url, buffer, {
+      headers: { 'Content-Type': 'application/octet-stream' }
     });
     res.json(response.data);
   } catch (err) {

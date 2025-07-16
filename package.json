@@ -5,11 +5,15 @@
   "main": "dist/index.js",
   "scripts": {
     "tsc:build": "tsc",
-    "start": "webpack serve --mode development",
+    "start:app": "npm run dev",
+    "dev":       "webpack serve --mode development",
+    "start:api": "npm run dev --prefix server",
+    "start":     "concurrently \"npm run start:api\" \"npm run start:app\"",
     "build": "webpack --mode production",
     "postbuild": "node scripts/copy-bundle.js"
   },
   "devDependencies": {
+    "concurrently": "^9.2.0",
     "crypto-browserify": "^3.12.1",
     "css-loader": "^7.1.2",
     "dotenv": "^16.5.0",
