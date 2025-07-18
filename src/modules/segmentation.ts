@@ -8,6 +8,7 @@ export interface Prediction {
   y:       number;
   width:   number;
   height:  number;
+  points: Array<{ x: number; y: number }>;
 }
 
 export class LegoSegmenter {

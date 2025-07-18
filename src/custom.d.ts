@@ -8,8 +8,17 @@ declare module 'quantize';
 declare module 'color.js';
 declare module 'colorjs.io';
 declare module 'colorjs.io/src/deltaE.js';
-
-declare module '@techstark/opencv-js';
+declare module '@techstark/opencv-js' {
+  const cv: any;
+  export default cv;
+}
+declare global {
+  namespace cv {
+    // 以后在签名里写 cv.Mat，TS 就认这是 any
+    type Mat       = any;
+    type MatVector = any;
+  }
+}
 
 
 declare const process: {

@@ -1,3 +1,4 @@
+// segmentService.ts
 import express from 'express';
 import cors from 'cors';
 import axios from 'axios';
@@ -11,7 +12,7 @@ dotenv.config({
 
 const ROBOFLOW_API_KEY = process.env.ROBOFLOW_API_KEY;
 if (!ROBOFLOW_API_KEY) {
-  console.error('❌ Missing ROBOFLOW_API_KEY in .env');
+  console.error('Missing ROBOFLOW_API_KEY in .env');
   process.exit(1);
 }
 console.log('Loaded ROBOFLOW_API_KEY =', ROBOFLOW_API_KEY);
@@ -39,13 +40,14 @@ app.post('/api/segment', async (req, res) => {
         endpoint,
         pureBase64,
         {
-          params: { api_key: ROBOFLOW_API_KEY },
+          params: { api_key: ROBOFLOW_API_KEY, format: 'masks'},
           headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
           timeout: 60_000,
           maxBodyLength: Infinity,
           maxContentLength: Infinity,
         }
     );
+      console.log('🔍 Roboflow raw response:', JSON.stringify(rfResp.data, null, 2));
 
     // 直接把 Roboflow 返回的 JSON 转给前端
     return res.json(rfResp.data);
@@ -54,6 +56,7 @@ app.post('/api/segment', async (req, res) => {
     // 打印并回传 Roboflow 端的错误
     if (axios.isAxiosError(err)) {
       console.error('▶ Roboflow status:', err.response?.status);
+        console.error('▶ Roboflow request:', err.request);
       console.error('▶ Roboflow body  :', err.response?.data);
       return res
           .status(err.response?.status || 500)
@@ -66,5 +69,5 @@ app.post('/api/segment', async (req, res) => {
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
-  console.log(`✅ Segment service listening on port ${port}`);
+  console.log(`Segment service listening on port ${port}`);
 });

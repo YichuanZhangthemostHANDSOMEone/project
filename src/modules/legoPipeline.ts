@@ -37,9 +37,32 @@ export class LegoPipeline {
     }
 
     // 3. 使用第一个预测的 mask（Base64 PNG），转换为单通道 Mat
-    const base64 = preds[0].mask.split(',')[1];
-    const u8 = Uint8Array.from(atob(base64), c => c.charCodeAt(0));
-    const mask = cv.imdecode(u8); // CV_8UC1, 0 背景 / 255 前景
+    const mask = new cv.Mat.zeros(rgbMat.rows, rgbMat.cols, cv.CV_8UC1);
+
+    // 1. 把点数组扁平化成一个 number[]： [x0, y0, x1, y1, …]
+    const rawCoords: number[] = [];
+    for (const p of preds[0].points) {
+      rawCoords.push(p.x, p.y);
+    }
+
+// 2. 用 matFromArray 生成一个 size=N×1，每个元素是 (x,y) 的 Mat
+    const contourMat = cv.matFromArray(
+        preds[0].points.length,    // rows
+        1,                          // cols
+        cv.CV_32SC2,                // 每个元素两个 32 位整型
+        rawCoords                   // 扁平化后的坐标数组
+    );
+
+// 3. 新建一个 MatVector，把 contourMat push 进去
+    const contours = new cv.MatVector();
+    contours.push_back(contourMat);
+
+// 4. 真正调用 fillPoly
+    cv.fillPoly(mask, contours, new cv.Scalar(255));
+
+// 5. 释放内存
+    contourMat.delete();
+    contours.delete();
 
     // 4. 对 RGB 图像做高斯模糊
     const blurred = new cv.Mat();
@@ -134,21 +157,24 @@ export class LegoPipeline {
     return out;
   }
 
-  private thresholdLab(labMat: any, lab: [number, number, number]): any {
-    // 三通道阈值，无需 alpha
-    const lower = new cv.Mat(labMat.rows, labMat.cols, labMat.type(), [
-      Math.max(0, lab[0] - 10),
-      Math.max(0, lab[1] - 15),
-      Math.max(0, lab[2] - 15)
-    ]);
-    const upper = new cv.Mat(labMat.rows, labMat.cols, labMat.type(), [
-      Math.min(255, lab[0] + 10),
-      Math.min(255, lab[1] + 15),
-      Math.min(255, lab[2] + 15)
-    ]);
+  private thresholdLab(labMat: cv.Mat, lab: [number, number, number]): cv.Mat {
+    const [L, A, B] = lab;
+    // 计算上下界
+    const lowScalar = new cv.Scalar(
+        Math.max(0, L - 10),
+        Math.max(0, A - 15),
+        Math.max(0, B - 15),
+        0          // 必须给第四个分量
+    );
+    const highScalar = new cv.Scalar(
+        Math.min(255, L + 10),
+        Math.min(255, A + 15),
+        Math.min(255, B + 15),
+        255        // 必须给第四个分量
+    );
+
     const mask = new cv.Mat();
-    cv.inRange(labMat, lower, upper, mask);
-    lower.delete(); upper.delete();
+    cv.inRange(labMat, lowScalar, highScalar, mask);
     return mask;
   }
 
