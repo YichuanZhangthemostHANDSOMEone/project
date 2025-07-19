@@ -159,22 +159,37 @@ export class LegoPipeline {
 
   private thresholdLab(labMat: cv.Mat, lab: [number, number, number]): cv.Mat {
     const [L, A, B] = lab;
-    // 计算上下界
-    const lowScalar = new cv.Scalar(
-        Math.max(0, L - 10),
-        Math.max(0, A - 15),
-        Math.max(0, B - 15),
-        0          // 必须给第四个分量
+
+    // 使用 Mat 表示阈值，以避免 Emscripten 绑定将 Scalar 当成 Mat 处理
+    const lower = new cv.Mat(
+        labMat.rows,
+        labMat.cols,
+        labMat.type(),
+        new cv.Scalar(
+            Math.max(0, L - 10),
+            Math.max(0, A - 15),
+            Math.max(0, B - 15),
+            0
+        )
     );
-    const highScalar = new cv.Scalar(
-        Math.min(255, L + 10),
-        Math.min(255, A + 15),
-        Math.min(255, B + 15),
-        255        // 必须给第四个分量
+    const upper = new cv.Mat(
+        labMat.rows,
+        labMat.cols,
+        labMat.type(),
+        new cv.Scalar(
+            Math.min(255, L + 10),
+            Math.min(255, A + 15),
+            Math.min(255, B + 15),
+            255
+        )
     );
 
     const mask = new cv.Mat();
-    cv.inRange(labMat, lowScalar, highScalar, mask);
+    cv.inRange(labMat, lower, upper, mask);
+
+    lower.delete();
+    upper.delete();
+
     return mask;
   }
 
