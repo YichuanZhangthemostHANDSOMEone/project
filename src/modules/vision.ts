@@ -44,9 +44,24 @@ export class VisionApp {
     ctx.drawImage(this.overlay, 0, 0);
     const image = out.toDataURL('image/png');
 
+    // 裁剪每个识别块生成 Base64
+    const blockImages: string[] = [];
+    for (const b of blocks) {
+      const c = document.createElement('canvas');
+      c.width = b.width;
+      c.height = b.height;
+      const bctx = c.getContext('2d')!;
+      bctx.drawImage(this.capture, b.x, b.y, b.width, b.height, 0, 0, b.width, b.height);
+      blockImages.push(c.toDataURL('image/png'));
+    }
+
     // **在这里打印**，方便调试看是不是拿到了数据
     console.log('导出的 image 长度：', image.length);
     console.log('识别到的 blocks:', blocks);
+    console.log('裁剪得到的 blockImages 数量：', blockImages.length);
+
+    sessionStorage.setItem('legoResultBlocks', JSON.stringify(blocks));
+    sessionStorage.setItem('legoResultBlockImages', JSON.stringify(blockImages));
 
     // 3) 返回给调用方
     return { image, blocks };
