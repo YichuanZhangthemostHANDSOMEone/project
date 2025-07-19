@@ -237,14 +237,29 @@ export class LegoPipeline {
   }
 
   private matchColor(lab: [number, number, number]): string {
+    // OpenCV returns Lab values scaled to 0-255. Convert to the
+    // ranges expected by colorjs.io: L in 0-100 and a/b in -128..127.
+    const labScaled: [number, number, number] = [
+        lab[0] * 100 / 255,
+        lab[1] - 128,
+        lab[2] - 128,
+    ];
+
     let best: LegoColor | null = null;
     let minE = Infinity;
-    const sample = new Color('lab', lab);
+    const sample = new Color('lab', labScaled);
     for (const c of legoColors) {
-      const rgbNorm: [number, number, number] = [c.rgb[0]/255, c.rgb[1]/255, c.rgb[2]/255];
+      const rgbNorm: [number, number, number] = [
+          c.rgb[0] / 255,
+          c.rgb[1] / 255,
+          c.rgb[2] / 255,
+      ];
       const legoC = new Color('srgb', rgbNorm);
       const d = sample.deltaE(legoC, { method: '2000' });
-      if (d < minE) { minE = d; best = c; }
+      if (d < minE) {
+        minE = d;
+        best = c;
+      }
     }
     return best ? best.name : 'Unknown';
   }
