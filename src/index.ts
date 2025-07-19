@@ -27,23 +27,19 @@ window.addEventListener('DOMContentLoaded', async () => {
     try {
       timer = setTimeout(() => showProcessingSpinner(true), 500);
 
-      // —— 这里改动 ——
-      // 1) 同时拿到 image 和 blocks
+      // 同时拿到导出的图像和识别结果
       const { image, blocks } = await app.analyzeAndExport();
-      // 2) 打印日志
       console.log('【主页面】导出 image 长度：', image.length);
       console.log('【主页面】识别到的 blocks：', blocks);
-      // —— 结束改动 ——
 
       clearTimeout(timer);
       showProcessingSpinner(false);
 
-      // // 存储到 sessionStorage
-      // sessionStorage.setItem('legoResultImage', image);
-      // // —— 同时存储 blocks
-      // sessionStorage.setItem('legoResultBlocks', JSON.stringify(blocks));
-      //
-      // window.location.href = '/lego-result.html';
+      // 存储到 sessionStorage 以便结果页展示
+      sessionStorage.setItem('legoResultImage', image);
+      sessionStorage.setItem('legoResultBlocks', JSON.stringify(blocks));
+
+      window.location.href = '/lego-result.html';
     } catch (error) {
       clearTimeout(timer);
       showProcessingSpinner(false);

@@ -268,6 +268,7 @@ a:hover {
   text-align: center;
 }
 .image-container {
+  position: relative;
   display: inline-block;
   background: var(--color-surface);
   padding: 1rem;
