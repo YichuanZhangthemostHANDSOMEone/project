@@ -641,3 +641,19 @@ a:hover {
   background: #000;
   overflow: hidden;
 }
+
+/* 展示分割后图片的列表 */
+#block-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+#block-list img {
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-sm);
+}

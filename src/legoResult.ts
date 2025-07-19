@@ -26,6 +26,18 @@ window.addEventListener('DOMContentLoaded', () => {
     console.warn('【结果页】未找到 legoResultBlocks');
   }
 
+  // 读取裁剪后的积木图片
+  const rawBlockImages = sessionStorage.getItem('legoResultBlockImages');
+  let blockImages: string[] = [];
+  if (rawBlockImages) {
+    try {
+      blockImages = JSON.parse(rawBlockImages);
+      console.log('【结果页】blockImages 数量：', blockImages.length);
+    } catch (e) {
+      console.error('【结果页】解析 blockImages 出错：', e);
+    }
+  }
+
   function draw() {
     if (!img || !overlay) return;
     overlay.width = img.naturalWidth;
@@ -44,6 +56,16 @@ window.addEventListener('DOMContentLoaded', () => {
   if (img) {
     if (img.complete) draw();
     else img.addEventListener('load', draw);
+  }
+
+  // 在页面上展示裁剪后的图片
+  const blockList = document.getElementById('block-list') as HTMLDivElement | null;
+  if (blockList) {
+    blockImages.forEach(src => {
+      const i = document.createElement('img');
+      i.src = src;
+      blockList.appendChild(i);
+    });
   }
 
   // 3. 绑定返回按钮
