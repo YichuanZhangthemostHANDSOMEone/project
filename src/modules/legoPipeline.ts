@@ -210,8 +210,10 @@ export class LegoPipeline {
     for (let i = 0; i < contours.size(); i++) {
       const cnt = contours.get(i);
       const area = cv.contourArea(cnt);
-      cnt.delete();
-      if (area < 100) continue;
+      if (area < 100) {
+        cnt.delete();
+        continue;
+      }
       const peri = cv.arcLength(cnt, true);
       const approx = new cv.Mat();
       cv.approxPolyDP(cnt, approx, 0.02 * peri, true);
@@ -221,6 +223,7 @@ export class LegoPipeline {
         if (aspect > 0.5 && aspect < 2.0) rects.push(r);
       }
       approx.delete();
+      cnt.delete();
     }
     hierarchy.delete(); contours.delete();
     return rects;
