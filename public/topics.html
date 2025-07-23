@@ -1,54 +1,3 @@
-
-<!--<!DOCTYPE html>-->
-<!--<html lang="en">-->
-<!--<head>-->
-<!--    <meta charset="UTF-8" />-->
-<!--    <meta name="viewport" content="width=device-width,initial-scale=1" />-->
-<!--    <title>Select Week</title>-->
-<!--</head>-->
-<!--<body>-->
-<!--&lt;!&ndash; header 与 index.html 完全相同 &ndash;&gt;-->
-<!--<header class="topbar">-->
-<!--    <div class="logo">Lego Network Analyzer</div>-->
-<!--    <nav class="main-nav">-->
-<!--        <a href="/">Home</a>-->
-<!--        <a href="/services">Services</a>-->
-<!--        <a href="/about">About Us</a>-->
-<!--    </nav>-->
-<!--    <button id="loginBtn" class="btn btn-primary">Login</button>-->
-<!--</header>-->
-
-<!--<div class="layout">-->
-<!--    &lt;!&ndash; sidebar 同 index.html 结构，内容为 AR Tool / Select Week &ndash;&gt;-->
-<!--    <aside class="sidebar">-->
-<!--        <ul>-->
-<!--            <li><a href="/"><span class="icon">🏠</span> AR Tool</a></li>-->
-<!--            <li class="active"><span class="icon">🗓️</span> Select Week</li>-->
-<!--        </ul>-->
-<!--    </aside>-->
-
-<!--    <main class="main-content">-->
-<!--        <section class="topics">-->
-<!--            <h2 class="topics-title">Select Week</h2>-->
-<!--            <ul class="week-list animated-list">-->
-<!--                <li><a href="quiz.html?week=1">Week 1: OSI Basics</a></li>-->
-<!--                <li><a href="quiz.html?week=2">Week 2: Secure Layers</a></li>-->
-<!--                <li><a href="quiz.html?week=3">Week 3: Secure Layers</a></li>-->
-<!--                <li><a href="quiz.html?week=4">Week 4: Secure Layers</a></li>-->
-<!--                <li><a href="quiz.html?week=5">Week 5: Secure Layers</a></li>-->
-<!--                <li><a href="quiz.html?week=6">Week 6: Secure Layers</a></li>-->
-<!--                <li><a href="quiz.html?week=7">Week 7: Secure Layers</a></li>-->
-<!--                <li><a href="quiz.html?week=8">Week 8: Secure Layers</a></li>-->
-<!--                <li><a href="quiz.html?week=9">Week 9: Secure Layers</a></li>-->
-<!--                <li><a href="quiz.html?week=10">Week 10: Final Review</a></li>-->
-<!--            </ul>-->
-<!--        </section>-->
-<!--    </main>-->
-<!--</div>-->
-
-<!--<script src="/topics.bundle.js"></script>-->
-<!--</body>-->
-<!--</html>-->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -58,43 +7,99 @@
 
 </head>
 <body>
+<!-- 顶部导航 -->
 <header class="topbar">
-    <div class="logo">Lego Network Analyzer</div>
+    <div class="logo">
+        <svg viewBox="0 0 24 24" width="32" height="32" fill="#4f46e5">
+            <path d="M3 3h18v18H3V3z" fill="none" stroke="#4f46e5" stroke-width="2"/>
+            <path d="M7 7h10v10H7V7z"/>
+        </svg>
+        <span class="logo-text">Lego Network Analyzer</span>
+    </div>
     <nav class="main-nav">
         <a href="/">Home</a>
         <a href="/services">Services</a>
         <a href="/about">About Us</a>
     </nav>
-    <button id="authBtn" class="btn-primary">Logout</button>
+    <button id="authBtn" class="btn btn-primary">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="#fff">
+            <path d="M16 17l5-5-5-5M21 12H9M13 5v2H5v10h8v2H3V5h10z"/>
+        </svg>
+        Logout
+    </button>
 </header>
 
-
 <div class="layout">
+    <!-- 侧边栏 -->
     <aside class="sidebar">
         <ul>
-            <li><a href="/"><span class="icon">🏠</span>AR Tool</a></li>
-            <li class="active"><span class="icon">🗓️</span>Select Week</li>
+            <li>
+                <a href="/">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                        <path d="M12 2l4 4H8l4-4zm0 20l-4-4h8l-4 4zm10-10l-4-4v8l4-4zm-20 0l4 4V8l-4 4z"/>
+                    </svg>
+                    <span>AR Tool</span>
+                </a>
+            </li>
+            <li class="active">
+                <a href="topics.html">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                        <path d="M3 4h18v2H3V4zm0 4h18v14H3V8zm2 2v10h14V10H5z"/>
+                    </svg>
+                    <span>Select Week</span>
+                </a>
+            </li>
         </ul>
     </aside>
 
+    <!-- 主内容 -->
     <main class="main-content">
-        <div class="card topics" style="max-width:700px; margin:auto;">
-            <h3>Select Week</h3>
-            <ul class="week-list">
-                <li><a href="quiz.html?week=1">Week 1: OSI Basics</a></li>
-                <li><a href="quiz.html?week=2">Week 2: Secure Layers</a></li>
-                <li><a href="quiz.html?week=3">Week 3: Secure Layers</a></li>
-                <li><a href="quiz.html?week=4">Week 4: Secure Layers</a></li>
-                <li><a href="quiz.html?week=5">Week 5: Secure Layers</a></li>
-                <li><a href="quiz.html?week=6">Week 6: Secure Layers</a></li>
-                <li><a href="quiz.html?week=7">Week 7: Secure Layers</a></li>
-                <li><a href="quiz.html?week=8">Week 8: Secure Layers</a></li>
-                <li><a href="quiz.html?week=9">Week 9: Secure Layers</a></li>
-                <li><a href="quiz.html?week=10">Week 10: Final Review</a></li>
-</ul>
+        <h1 class="page-title">Select Week</h1>
+        <div class="topics-grid">
+            <a class="week-card" href="quiz.html?week=1">
+                <h2>Week 1: OSI Basics</h2>
+                <p>An introduction to the fundamental concepts of the OSI model.</p>
+            </a>
+            <a class="week-card" href="quiz.html?week=2">
+                <h2>Week 2: Secure Layers</h2>
+                <p>Understanding and implementing security on different layers.</p>
+            </a>
+            <a class="week-card" href="quiz.html?week=3">
+                <h2>Week 3: Secure Layers</h2>
+                <p>Advanced techniques for securing network layers.</p>
+            </a>
+            <a class="week-card" href="quiz.html?week=4">
+                <h2>Week 4: Secure Layers</h2>
+                <p>Practical application of layer security protocols.</p>
+            </a>
+            <a class="week-card" href="quiz.html?week=5">
+                <h2>Week 5: Secure Layers</h2>
+                <p>Case studies in network layer security breaches.</p>
+            </a>
+            <a class="week-card" href="quiz.html?week=6">
+                <h2>Week 6: Secure Layers</h2>
+                <p>Emerging threats and countermeasures for layers.</p>
+            </a>
+            <a class="week-card" href="quiz.html?week=7">
+                <h2>Week 7: Secure Layers</h2>
+                <p>Focus on transport layer security mechanisms.</p>
+            </a>
+            <a class="week-card" href="quiz.html?week=8">
+                <h2>Week 8: Secure Layers</h2>
+                <p>Application layer security protocols and best practices.</p>
+            </a>
+            <a class="week-card" href="quiz.html?week=9">
+                <h2>Week 9: Secure Layers</h2>
+                <p>Comprehensive review of all secure layer concepts.</p>
+            </a>
+            <a class="week-card highlight" href="quiz.html?week=10">
+                <h2>Week 10: Final Review</h2>
+                <p>Prepare for the final assessment and review all course materials.</p>
+            </a>
         </div>
     </main>
 </div>
-<script src="/topics.bundle.js"></script>
+
+<script src="topics.bundle.js" defer></script>
 </body>
 </html>

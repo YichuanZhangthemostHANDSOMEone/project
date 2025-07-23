@@ -141,23 +141,26 @@ window.addEventListener('DOMContentLoaded', () => {
     };
 
     // —— 学习记录按钮：学生 vs 教师 ——
-    recordBtn.onclick = async (e) => {
+    // 新：老师先到列表页，再从列表点人进入详情
+    recordBtn.onclick = async e => {
       e.preventDefault();
       const fresh = await getDoc(userRef);
       const role  = fresh.exists() ? (fresh.data() as any).role : 'student';
-      window.location.href = role === 'teacher'
-          ? '/teacher_record.html'
-          : '/student_record.html';
+      if (role === 'teacher') {
+        window.location.href = '/teacher_list.html';
+      } else {
+        window.location.href = '/student_record.html';
+      }
     };
 
     // —— Quiz / 编辑按钮 ——
     if (isTeacher) {
-      quizBtn.textContent = '题库编辑';
+      quizBtn.textContent = 'Quiz Edit';
       bindButton(quizBtn, () => {
         window.location.href = '/quiz_editor.html';
       });
     } else {
-      quizBtn.textContent = '开始测验';
+      quizBtn.textContent = 'Start Quiz';
       bindButton(quizBtn, () => {
         window.location.href = '/topics.html';
       });
@@ -165,7 +168,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
     // —— AR 扫描功能 ——
     if (!captureCanvas) {
-      console.error('❌ 找不到 <canvas id="capture">');
+      console.error('❌ Cannot find <canvas id="capture">');
       return;
     }
     const app = new VisionApp(videoEl, captureCanvas);
