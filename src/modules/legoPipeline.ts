@@ -39,11 +39,12 @@ export class LegoPipeline {
     // 3. 使用第一个预测的 mask（Base64 PNG），转换为单通道 Mat
     const mask = new cv.Mat.zeros(rgbMat.rows, rgbMat.cols, cv.CV_8UC1);
 
-    // 1. 把点数组扁平化成一个 number[]： [x0, y0, x1, y1, …]
+    // 1. Flatten the array of points into a number[] [x0, y0, x1, y1, …]
     const rawCoords: number[] = [];
     for (const p of preds[0].points) {
       rawCoords.push(p.x, p.y);
     }
+//
 
 // 2. 用 matFromArray 生成一个 size=N×1，每个元素是 (x,y) 的 Mat
     const contourMat = cv.matFromArray(
