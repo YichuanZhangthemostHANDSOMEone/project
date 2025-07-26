@@ -12,31 +12,20 @@ window.addEventListener('DOMContentLoaded', () => {
     console.warn('【结果页】未找到 legoResultImage');
   }
 
-  // 2. 取出识别结果 blocks
+  // 2. 取出识别结果 cells
   const rawBlocks = sessionStorage.getItem('legoResultBlocks');
-  let blocks: any[] = [];
+  let cells: any[] = [];
   if (rawBlocks) {
     try {
-      blocks = JSON.parse(rawBlocks);
-      console.log('【结果页】sessionStorage 中的 blocks：', blocks);
+      cells = JSON.parse(rawBlocks);
+      console.log('【结果页】sessionStorage 中的 cells：', cells);
     } catch (e) {
-      console.error('【结果页】解析 blocks 出错：', e);
+      console.error('【结果页】解析 cells 出错：', e);
     }
   } else {
     console.warn('【结果页】未找到 legoResultBlocks');
   }
 
-  // 读取裁剪后的积木图片
-  const rawBlockImages = sessionStorage.getItem('legoResultBlockImages');
-  let blockImages: string[] = [];
-  if (rawBlockImages) {
-    try {
-      blockImages = JSON.parse(rawBlockImages);
-      console.log('【结果页】blockImages 数量：', blockImages.length);
-    } catch (e) {
-      console.error('【结果页】解析 blockImages 出错：', e);
-    }
-  }
 
   function draw() {
     if (!img || !overlay) return;
@@ -45,11 +34,15 @@ window.addEventListener('DOMContentLoaded', () => {
     const ctx = overlay.getContext('2d')!;
     ctx.clearRect(0, 0, overlay.width, overlay.height);
     ctx.strokeStyle = '#f00';
-    ctx.font = '16px sans-serif';
+    ctx.font = '12px sans-serif';
     ctx.fillStyle = '#f00';
-    for (const b of blocks) {
-      ctx.strokeRect(b.x, b.y, b.width, b.height);
-      ctx.fillText(b.color, b.x, b.y - 4);
+    for (const cell of cells) {
+      ctx.beginPath();
+      ctx.moveTo(cell.quad[0].x, cell.quad[0].y);
+      for (let i = 1; i < 4; i++) ctx.lineTo(cell.quad[i].x, cell.quad[i].y);
+      ctx.closePath();
+      ctx.stroke();
+      ctx.fillText(cell.color, cell.quad[0].x, cell.quad[0].y);
     }
   }
 
@@ -58,15 +51,6 @@ window.addEventListener('DOMContentLoaded', () => {
     else img.addEventListener('load', draw);
   }
 
-  // 在页面上展示裁剪后的图片
-  const blockList = document.getElementById('block-list') as HTMLDivElement | null;
-  if (blockList) {
-    blockImages.forEach(src => {
-      const i = document.createElement('img');
-      i.src = src;
-      blockList.appendChild(i);
-    });
-  }
 
   // 3. 绑定返回按钮
   const btn = document.getElementById('returnBtn') as HTMLButtonElement | null;
