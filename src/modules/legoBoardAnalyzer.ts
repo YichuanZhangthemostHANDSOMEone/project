@@ -38,15 +38,22 @@ export class LegoBoardAnalyzer {
    * cell outlines and color labels.
    */
   async analyze(canvas: HTMLCanvasElement): Promise<CellColorResult[]> {
+    console.log('[LBA] 🚀 analyze() start', {
+      width: canvas.width,
+      height: canvas.height,
+    });
     // Convert canvas to RGB Mat once.
     const src = cv.imread(canvas);
+    console.log('[LBA] cv.imread 完成', { rows: src.rows, cols: src.cols });
     const rgb = new cv.Mat();
     cv.cvtColor(src, rgb, cv.COLOR_RGBA2RGB);
     src.delete();
 
     // 1) Board segmentation using remote segmenter service
     const predictions = await this.segmenter.segment(canvas);
+    console.log('[LBA] segmenter.segment 返回 predictions:', predictions);
     if (!predictions || !predictions.length) {
+      console.log('[LBA] 🎯 没有分割结果，直接返回 []');
       rgb.delete();
       return [];
     }
@@ -61,6 +68,10 @@ export class LegoBoardAnalyzer {
     const polyVec = new cv.MatVector();
     polyVec.push_back(poly);
     cv.fillPoly(mask, polyVec, new cv.Scalar(255));
+    const kernel = cv.getStructuringElement(cv.MORPH_RECT, new cv.Size(15, 15));
+    cv.morphologyEx(mask, mask, cv.MORPH_CLOSE, kernel, new cv.Point(-1, -1), 2);
+    console.log('[LBA] mask 闭合后平滑完成');
+    console.log('[LBA] mask 填充完成');
     poly.delete();
     polyVec.delete();
 
@@ -68,6 +79,7 @@ export class LegoBoardAnalyzer {
     const contours = new cv.MatVector();
     const hierarchy = new cv.Mat();
     cv.findContours(mask, contours, hierarchy, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE);
+    console.log('[LBA] findContours 找到 contours 数量：', contours.size());
     hierarchy.delete();
 
     let boardContour: cv.Mat | null = null;
@@ -92,8 +104,13 @@ export class LegoBoardAnalyzer {
     }
 
     const peri = cv.arcLength(boardContour, true);
+    console.log('[LBA] 选中最大轮廓面积 =', maxArea);
     const approx = new cv.Mat();
-    cv.approxPolyDP(boardContour, approx, 0.02 * peri, true);
+    const hull = new cv.Mat();
+    cv.convexHull(boardContour, hull, true);
+    cv.approxPolyDP(hull, approx, 0.02 * peri, true);
+    console.log('[LBA] hull+approxPolyDP 后顶点数：', approx.rows);
+    hull.delete();
     boardContour.delete();
     if (approx.rows !== 4) {
       approx.delete();
@@ -103,6 +120,7 @@ export class LegoBoardAnalyzer {
     }
 
     const srcQuad = this.extractQuad(approx);
+    console.log('[LBA] srcQuad =', srcQuad);
     approx.delete();
 
     // 3) Perspective transformation to fixed top view
@@ -127,29 +145,36 @@ export class LegoBoardAnalyzer {
 
     // pre-compute inverse transform for later mapping
     const MInv = cv.getPerspectiveTransform(dstQuad, srcQuadMat);
+    console.log('[LBA] warpPerspective 完成，warped 尺寸 =', warped.cols, warped.rows);
 
     srcQuadMat.delete();
     dstQuad.delete();
     rgb.delete();
     mask.delete();
 
+
     // 4) Iterate each grid cell and detect dominant color
     const results: CellColorResult[] = [];
     const cellW = warped.cols / this.cols;
     const cellH = warped.rows / this.rows;
-    const inset = 2; // pixels to inset ROI
+    const inset = Math.max(1, Math.min(4, Math.floor(Math.min(cellW, cellH) * 0.15))); // pixels to inset ROI
 
     const lab = new cv.Mat();
     cv.cvtColor(warped, lab, cv.COLOR_RGB2Lab);
 
+    console.log('[LBA] 开始遍历格子 rows × cols =', this.rows, '×', this.cols);
     for (let r = 0; r < this.rows; r++) {
       for (let c = 0; c < this.cols; c++) {
         const x = Math.round(c * cellW + inset);
         const y = Math.round(r * cellH + inset);
         const w = Math.round(cellW - inset * 2);
         const h = Math.round(cellH - inset * 2);
+        if (x < 0 || y < 0 || x + w >= warped.cols || y + h >= warped.rows || w <= 0 || h <= 0) {
+          continue;
+        }
         const roiRect = new cv.Rect(x, y, w, h);
         const roi = lab.roi(roiRect);
+        console.log(`[LBA] 处理 cell [${r},${c}]，ROI 大小 =`, w, '×', h);
 
         // ---- Stage 1: Color difference filtering ----
         const blurred = new cv.Mat();
@@ -161,6 +186,7 @@ export class LegoBoardAnalyzer {
           mean[2],
         ]);
         // Adjust this threshold (15-25) depending on lighting conditions
+        console.log(`[LBA]   color match =`, name, 'deltaE =', deltaE);
         if (deltaE > 20 || name === 'PlateColor') {
           roi.delete();
           blurred.delete();
@@ -176,7 +202,8 @@ export class LegoBoardAnalyzer {
         meanMat.delete();
         stdMat.delete();
         // Tune this threshold (3-10) based on ROI size/noise level
-        if (sumStd < 5) {
+        console.log(`[LBA]   sumStd =`, sumStd);
+        if (sumStd < 3) {
           roi.delete();
           blurred.delete();
           continue;
@@ -188,11 +215,12 @@ export class LegoBoardAnalyzer {
         const edges = new cv.Mat();
         cv.Canny(gray, edges, 50, 150);
         const edgeCount = cv.countNonZero(edges);
-        const minEdges = w * h * 0.02; // try 1%-5% to tune
+        const minEdges = w * h * 0.01; // try 1%-5% to tune
         gray.delete();
         edges.delete();
         blurred.delete();
         roi.delete();
+        console.log(`[LBA]   edgeCount =`, edgeCount, 'minEdges =', minEdges);
         if (edgeCount < minEdges) {
           continue;
         }
@@ -202,6 +230,7 @@ export class LegoBoardAnalyzer {
         results.push({ row: r, col: c, color: name, quad });
       }
     }
+    console.log('[LBA] 检测结束，结果数量 =', results.length);
 
     lab.delete();
     warped.delete();
@@ -210,6 +239,7 @@ export class LegoBoardAnalyzer {
 
     // 5) Draw results back onto original canvas
     this.drawResults(canvas, results);
+    console.log('[LBA] drawResults 完成');
 
     return results;
   }
@@ -225,10 +255,15 @@ export class LegoBoardAnalyzer {
     }
     // order points: top-left, top-right, bottom-right, bottom-left
     pts.sort((a, b) => a.y - b.y);
-    const [p1, p2, p3, p4] = pts;
-    const top = [p1, p2].sort((a, b) => a.x - b.x);
-    const bottom = [p3, p4].sort((a, b) => a.x - b.x);
-    return [top[0], top[1], bottom[1], bottom[0]];
+    const sortedBySum = [...pts].sort((a, b) => (a.x + a.y) - (b.x + b.y));
+    const sortedByDiff = [...pts].sort((a, b) => (a.x - a.y) - (b.x - b.y));
+
+    const tl = sortedBySum[0];     // 左上 (最小和)
+    const br = sortedBySum[3];     // 右下 (最大和)
+    const tr = sortedByDiff[3];    // 右上 (最大差)
+    const bl = sortedByDiff[0];    // 左下 (最小差)
+
+    return [tl, tr, br, bl];
   }
 
   /** Map a cell rectangle from warped image back to original coordinates */

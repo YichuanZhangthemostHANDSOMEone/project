@@ -2,6 +2,7 @@ import { Camera } from '@modules/camera';
 import { LegoSegmenter } from '@modules/segmentation';
 import { LegoBoardAnalyzer, CellColorResult } from '@modules/legoBoardAnalyzer';
 import { showLoadingIndicator } from '@modules/ui';
+import {deltaE} from "colorjs.io/fn";
 
 export class VisionApp {
   private camera: Camera;
@@ -50,7 +51,6 @@ export class VisionApp {
     // **在这里打印**，方便调试看是不是拿到了数据
     console.log('导出的 image 长度：', image.length);
     console.log('识别到的 cells:', blocks);
-
     sessionStorage.setItem('legoResultBlocks', JSON.stringify(blocks));
 
     // 3) 返回给调用方

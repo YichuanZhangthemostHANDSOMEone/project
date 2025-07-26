@@ -13,6 +13,7 @@ window.addEventListener('DOMContentLoaded', async () => {
   const overlay    = document.getElementById('overlay')    as HTMLCanvasElement;
 
   const app = new VisionApp(video, capture, overlay);
+  const DEBUG = true;
 
   try {
     await app.start();
@@ -24,6 +25,11 @@ window.addEventListener('DOMContentLoaded', async () => {
 
   bindButton(captureBtn, async () => {
     let timer: any;
+    if (DEBUG) {
+      const cells = await app.analyze();
+      console.log('调试模式 cells:', cells);
+      return;
+    }
     try {
       timer = setTimeout(() => showProcessingSpinner(true), 500);
 
