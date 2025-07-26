@@ -1,12 +1,12 @@
 import { Camera } from '@modules/camera';
 import { LegoSegmenter } from '@modules/segmentation';
-import { LegoPipeline, LegoBlockResult } from '@modules/legoPipeline';
+import { LegoBoardAnalyzer, CellColorResult } from '@modules/legoBoardAnalyzer';
 import { showLoadingIndicator } from '@modules/ui';
 
 export class VisionApp {
   private camera: Camera;
   private segmenter: LegoSegmenter;
-  private pipeline: LegoPipeline;
+  private analyzer: LegoBoardAnalyzer;
 
   constructor(
       private video: HTMLVideoElement,
@@ -15,7 +15,7 @@ export class VisionApp {
   ) {
     this.camera = new Camera(video);
     this.segmenter = new LegoSegmenter();
-    this.pipeline = new LegoPipeline(this.segmenter);
+    this.analyzer = new LegoBoardAnalyzer(this.segmenter);
   }
 
   async start() {
@@ -24,14 +24,14 @@ export class VisionApp {
     showLoadingIndicator(false);
   }
 
-  async analyze(): Promise<LegoBlockResult[]> {
+  async analyze(): Promise<CellColorResult[]> {
     this.camera.capture(this.capture);
-    const blocks = await this.pipeline.analyze(this.capture);
-    this.draw(blocks);
-    return blocks;
+    const cells = await this.analyzer.analyze(this.capture);
+    this.draw(cells);
+    return cells;
   }
 
-  async analyzeAndExport(): Promise<{ image:string; blocks:LegoBlockResult[] }> {
+  async analyzeAndExport(): Promise<{ image:string; blocks: CellColorResult[] }> {
     // 1) 调用 analyze 拿到识别结果
     const blocks = await this.analyze();
 
@@ -44,38 +44,34 @@ export class VisionApp {
     ctx.drawImage(this.overlay, 0, 0);
     const image = out.toDataURL('image/png');
 
-    // 裁剪每个识别块生成 Base64
-    const blockImages: string[] = [];
-    for (const b of blocks) {
-      const c = document.createElement('canvas');
-      c.width = b.width;
-      c.height = b.height;
-      const bctx = c.getContext('2d')!;
-      bctx.drawImage(this.capture, b.x, b.y, b.width, b.height, 0, 0, b.width, b.height);
-      blockImages.push(c.toDataURL('image/png'));
-    }
+    // Analyzer works on the capture directly, so no additional cropping
+    // is required. We simply export the annotated image with overlays.
 
     // **在这里打印**，方便调试看是不是拿到了数据
     console.log('导出的 image 长度：', image.length);
-    console.log('识别到的 blocks:', blocks);
-    console.log('裁剪得到的 blockImages 数量：', blockImages.length);
+    console.log('识别到的 cells:', blocks);
 
     sessionStorage.setItem('legoResultBlocks', JSON.stringify(blocks));
-    sessionStorage.setItem('legoResultBlockImages', JSON.stringify(blockImages));
 
     // 3) 返回给调用方
     return { image, blocks };
   }
 
-  private draw(blocks: LegoBlockResult[]) {
+  private draw(cells: CellColorResult[]) {
     const ctx = this.overlay.getContext('2d')!;
     this.overlay.width = this.capture.width;
     this.overlay.height = this.capture.height;
-    ctx.clearRect(0,0,this.overlay.width,this.overlay.height);
-    ctx.strokeStyle='#f00'; ctx.font='16px sans-serif'; ctx.fillStyle='#f00';
-    for (const b of blocks) {
-      ctx.strokeRect(b.x,b.y,b.width,b.height);
-      ctx.fillText(b.color,b.x,b.y-4);
-    }
+    ctx.clearRect(0, 0, this.overlay.width, this.overlay.height);
+    ctx.strokeStyle = '#f00';
+    ctx.font = '12px sans-serif';
+    ctx.fillStyle = '#f00';
+    cells.forEach(cell => {
+      ctx.beginPath();
+      ctx.moveTo(cell.quad[0].x, cell.quad[0].y);
+      for (let i = 1; i < 4; i++) ctx.lineTo(cell.quad[i].x, cell.quad[i].y);
+      ctx.closePath();
+      ctx.stroke();
+      ctx.fillText(cell.color, cell.quad[0].x, cell.quad[0].y);
+    });
   }
 }

@@ -27,23 +27,20 @@ The application relies on the following environment variables:
 - `FIREBASE_MEASUREMENT_ID`
 - `ROBOFLOW_API_KEY`
 
-### LEGO segmentation pipeline
+### LEGO board analyzer
 
-This project implements an advanced image processing pipeline in
-`src/modules/legoPipeline.ts`. It captures a frame from the camera,
-segments LEGO regions using MediaPipe and a Roboflow model, performs
-color quantization and Lab-based filtering, applies morphological
-operations and contour analysis, and finally classifies each detected
-LEGO block using the closest match from the built-in color palette.
+The application now uses a grid-based analyzer implemented in
+`src/modules/legoBoardAnalyzer.ts`. It segments the LEGO board, performs a
+perspective transform to a fixed top view and detects the dominant color in
+each grid cell. Results are mapped back onto the original image, so users can
+see detected colors directly on their uploaded photo.
 
-The `VisionApp` class integrates this pipeline. When the user clicks the
-**Capture** button, the app now shows a spinner while the frame is analyzed,
-then automatically navigates to `lego-result.html`. The page displays the
-annotated image and includes a **Return** button to go back to the main
-camera page.
+`VisionApp` wraps this analyzer. When the user clicks **Capture**, the app
+shows a spinner while processing the frame and then navigates to
+`lego-result.html`. The result page displays the annotated image with color
+labels overlaid.
 
-The pipeline depends on OpenCV.js, MediaPipe Tasks Vision, `quantize`,
-`colorjs.io` and `color.js`. Ensure these packages are installed with
-`npm install`.
+The analyzer depends on OpenCV.js and `colorjs.io`. Ensure dependencies are
+installed via `npm install`.
 
 These values are loaded using `dotenv` and injected during the webpack build.

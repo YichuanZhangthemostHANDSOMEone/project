@@ -28,16 +28,16 @@ window.addEventListener('DOMContentLoaded', async () => {
       timer = setTimeout(() => showProcessingSpinner(true), 500);
 
       // 同时拿到导出的图像和识别结果
-      const { image, blocks } = await app.analyzeAndExport();
+      const { image, blocks: cells } = await app.analyzeAndExport();
       console.log('【主页面】导出 image 长度：', image.length);
-      console.log('【主页面】识别到的 blocks：', blocks);
+      console.log('【主页面】识别到的 cells：', cells);
 
       clearTimeout(timer);
       showProcessingSpinner(false);
 
       // 存储到 sessionStorage 以便结果页展示
       sessionStorage.setItem('legoResultImage', image);
-      sessionStorage.setItem('legoResultBlocks', JSON.stringify(blocks));
+      sessionStorage.setItem('legoResultBlocks', JSON.stringify(cells));
 
       window.location.href = '/lego-result.html';
     } catch (error) {
