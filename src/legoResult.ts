@@ -1,4 +1,5 @@
 import './styles.css';
+import { legoColors } from '@modules/legoColors';
 
 window.addEventListener('DOMContentLoaded', () => {
   // 1. 展示导出的图像
@@ -44,6 +45,36 @@ window.addEventListener('DOMContentLoaded', () => {
       ctx.stroke();
       ctx.fillText(cell.color, cell.quad[0].x, cell.quad[0].y);
     }
+
+    // Group cells by color and draw big bounding boxes
+    const colorMap = new Map(
+        legoColors.map(c => [c.name, `rgb(${c.rgb[0]}, ${c.rgb[1]}, ${c.rgb[2]})`])
+    );
+    const bounds = new Map<string, { minX: number; minY: number; maxX: number; maxY: number }>();
+    for (const cell of cells) {
+      const xs = cell.quad.map((p: any) => p.x);
+      const ys = cell.quad.map((p: any) => p.y);
+      const rect = {
+        minX: Math.min(...xs),
+        minY: Math.min(...ys),
+        maxX: Math.max(...xs),
+        maxY: Math.max(...ys),
+      };
+      const b = bounds.get(cell.color);
+      if (!b) bounds.set(cell.color, { ...rect });
+      else {
+        b.minX = Math.min(b.minX, rect.minX);
+        b.minY = Math.min(b.minY, rect.minY);
+        b.maxX = Math.max(b.maxX, rect.maxX);
+        b.maxY = Math.max(b.maxY, rect.maxY);
+      }
+    }
+
+    ctx.lineWidth = 2;
+    bounds.forEach((b, color) => {
+      ctx.strokeStyle = colorMap.get(color) || '#0f0';
+      ctx.strokeRect(b.minX, b.minY, b.maxX - b.minX, b.maxY - b.minY);
+    });
   }
 
   if (img) {
