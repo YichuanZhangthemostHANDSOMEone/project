@@ -2,7 +2,7 @@ import { Camera } from '@modules/camera';
 import { LegoSegmenter } from '@modules/segmentation';
 import { LegoBoardAnalyzer, CellColorResult } from '@modules/legoBoardAnalyzer';
 import { showLoadingIndicator } from '@modules/ui';
-import {deltaE} from "colorjs.io/fn";
+import { legoColors } from '@modules/legoColors';
 
 export class VisionApp {
   private camera: Camera;
@@ -72,6 +72,37 @@ export class VisionApp {
       ctx.closePath();
       ctx.stroke();
       ctx.fillText(cell.color, cell.quad[0].x, cell.quad[0].y);
+    });
+
+    // Group cells by color and draw one large bounding box per color
+    const colorMap = new Map(
+        legoColors.map(c => [c.name, `rgb(${c.rgb[0]}, ${c.rgb[1]}, ${c.rgb[2]})`])
+    );
+    const bounds = new Map<string, { minX: number; minY: number; maxX: number; maxY: number }>();
+    for (const cell of cells) {
+      const xs = cell.quad.map(p => p.x);
+      const ys = cell.quad.map(p => p.y);
+      const rect = {
+        minX: Math.min(...xs),
+        minY: Math.min(...ys),
+        maxX: Math.max(...xs),
+        maxY: Math.max(...ys),
+      };
+      const b = bounds.get(cell.color);
+      if (!b) {
+        bounds.set(cell.color, { ...rect });
+      } else {
+        b.minX = Math.min(b.minX, rect.minX);
+        b.minY = Math.min(b.minY, rect.minY);
+        b.maxX = Math.max(b.maxX, rect.maxX);
+        b.maxY = Math.max(b.maxY, rect.maxY);
+      }
+    }
+
+    ctx.lineWidth = 2;
+    bounds.forEach((b, color) => {
+      ctx.strokeStyle = colorMap.get(color) || '#0f0';
+      ctx.strokeRect(b.minX, b.minY, b.maxX - b.minX, b.maxY - b.minY);
     });
   }
 }
