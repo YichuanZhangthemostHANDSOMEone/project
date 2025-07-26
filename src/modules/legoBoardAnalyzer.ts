@@ -210,20 +210,20 @@ export class LegoBoardAnalyzer {
         }
 
         // ---- Stage 3: Edge detection filtering ----
-        const gray = new cv.Mat();
-        cv.cvtColor(roi, gray, cv.COLOR_RGB2GRAY);
-        const edges = new cv.Mat();
-        cv.Canny(gray, edges, 50, 150);
-        const edgeCount = cv.countNonZero(edges);
-        const minEdges = w * h * 0.01; // try 1%-5% to tune
-        gray.delete();
-        edges.delete();
-        blurred.delete();
-        roi.delete();
-        console.log(`[LBA]   edgeCount =`, edgeCount, 'minEdges =', minEdges);
-        if (edgeCount < minEdges) {
-          continue;
-        }
+        // const gray = new cv.Mat();
+        // cv.cvtColor(roi, gray, cv.COLOR_RGB2GRAY);
+        // const edges = new cv.Mat();
+        // cv.Canny(gray, edges, 50, 150);
+        // const edgeCount = cv.countNonZero(edges);
+        // const minEdges = w * h * 0.01; // try 1%-5% to tune
+        // gray.delete();
+        // edges.delete();
+        // blurred.delete();
+        // roi.delete();
+        // console.log(`[LBA]   edgeCount =`, edgeCount, 'minEdges =', minEdges);
+        // if (edgeCount < minEdges) {
+        //   continue;
+        // }
 
         // Map valid cell back to original coordinates
         const quad = this.mapCellQuad(x, y, w, h, MInv);
