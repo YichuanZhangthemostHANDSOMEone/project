@@ -12,4 +12,5 @@ export const legoColors: LegoColor[] = [
   { name: 'Yellow', rgb: [245, 205, 47] },
   { name: 'White',  rgb: [255, 255, 255] },
   { name: 'Black',  rgb: [0, 0, 0] },
+  { name: 'PlateColor',  rgb: [204, 198, 177] },
 ];
