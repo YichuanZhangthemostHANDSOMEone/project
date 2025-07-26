@@ -150,16 +150,56 @@ export class LegoBoardAnalyzer {
         const h = Math.round(cellH - inset * 2);
         const roiRect = new cv.Rect(x, y, w, h);
         const roi = lab.roi(roiRect);
+
+        // ---- Stage 1: Color difference filtering ----
         const blurred = new cv.Mat();
         cv.GaussianBlur(roi, blurred, new cv.Size(3, 3), 0, 0, cv.BORDER_DEFAULT);
         const mean = cv.mean(blurred);
-        roi.delete();
+        const { name, deltaE } = this.matchColorWithDE([
+          mean[0],
+          mean[1],
+          mean[2],
+        ]);
+        // Adjust this threshold (15-25) depending on lighting conditions
+        if (deltaE > 20 || name === 'PlateColor') {
+          roi.delete();
+          blurred.delete();
+          continue;
+        }
+
+        // ---- Stage 2: Texture/standard deviation filtering ----
+        const meanMat = new cv.Mat();
+        const stdMat = new cv.Mat();
+        cv.meanStdDev(blurred, meanMat, stdMat);
+        const std = stdMat.data64F;
+        const sumStd = std[0] + std[1] + std[2];
+        meanMat.delete();
+        stdMat.delete();
+        // Tune this threshold (3-10) based on ROI size/noise level
+        if (sumStd < 5) {
+          roi.delete();
+          blurred.delete();
+          continue;
+        }
+
+        // ---- Stage 3: Edge detection filtering ----
+        const gray = new cv.Mat();
+        cv.cvtColor(roi, gray, cv.COLOR_RGB2GRAY);
+        const edges = new cv.Mat();
+        cv.Canny(gray, edges, 50, 150);
+        const edgeCount = cv.countNonZero(edges);
+        const minEdges = w * h * 0.02; // try 1%-5% to tune
+        gray.delete();
+        edges.delete();
         blurred.delete();
+        roi.delete();
+        if (edgeCount < minEdges) {
+          continue;
+        }
 
-        const colorName = this.matchColor([mean[0], mean[1], mean[2]]);
-
+        // Map valid cell back to original coordinates
         const quad = this.mapCellQuad(x, y, w, h, MInv);
-        results.push({ row: r, col: c, color: colorName, quad });
+        results.push({ row: r, col: c, color: name, quad });
       }
     }
 
@@ -238,11 +278,16 @@ export class LegoBoardAnalyzer {
   }
 
   /**
-   * Match a Lab color (OpenCV range 0-255) to the closest LEGO color.
+   * Match a Lab color (OpenCV range 0-255) to the closest LEGO color and
+   * return the deltaE distance. This is used for filtering out background
+   * or poorly detected bricks.
    */
-  private matchColor(lab: [number, number, number]): string {
+  private matchColorWithDE(lab: [number, number, number]): {
+    name: string; deltaE: number;
+  } {
+    // Convert from OpenCV Lab (0-255) to standard Lab range.
     const scaled: [number, number, number] = [
-      lab[0] * 100 / 255,
+      (lab[0] * 100) / 255,
       lab[1] - 128,
       lab[2] - 128,
     ];
@@ -262,6 +307,6 @@ export class LegoBoardAnalyzer {
         best = c;
       }
     }
-    return best ? best.name : 'Unknown';
+    return { name: best ? best.name : 'Unknown', deltaE: minE };
   }
 }
