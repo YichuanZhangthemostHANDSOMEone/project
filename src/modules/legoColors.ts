@@ -12,6 +12,5 @@ export const legoColors: LegoColor[] = [
   { name: 'Yellow', rgb: [245, 205, 47] },
   { name: 'White',  rgb: [255, 255, 255] },
   { name: 'Black',  rgb: [0, 0, 0] },
-  // Special board plate color used for filtering background
-  { name: 'PlateColor', rgb: [190, 190, 190] },
+  { name: 'PlateColor',  rgb: [204, 198, 177] },
 ];
