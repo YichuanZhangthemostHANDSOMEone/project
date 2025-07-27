@@ -171,13 +171,14 @@ export class VisionApp {
         legoColors.map(c => [c.name, `rgb(${c.rgb[0]}, ${c.rgb[1]}, ${c.rgb[2]})`])
     );
 
-    // 3) 按 color + row 分组
+    // 3) 按 protocol+component + row 分组
     const grouped = new Map<string, Map<number, CellColorResult[]>>();
     for (const cell of cells) {
-      let byRow = grouped.get(cell.color);
+      const label = `${cell.protocol} · ${cell.component}`;
+      let byRow = grouped.get(label);
       if (!byRow) {
         byRow = new Map<number, CellColorResult[]>();
-        grouped.set(cell.color, byRow);
+        grouped.set(label, byRow);
       }
       const rowList = byRow.get(cell.row) || [];
       rowList.push(cell);
@@ -189,13 +190,19 @@ export class VisionApp {
     ctx.font = '12px sans-serif';
     ctx.fillStyle = '#fff';
 
-    for (const [color, rows] of grouped) {
-      const stroke = colorMap.get(color) || '#f00';
+    for (const [label, rows] of grouped) {
+      // 同一组颜色共用同一描边颜色
+      const sampleCells = Array.from(rows.values())[0];
+      const sampleCell = sampleCells[0];
+      const stroke = colorMap.get(sampleCell.color) || '#f00';
       ctx.strokeStyle = stroke;
 
       for (const cellsInRow of rows.values()) {
         // 收集角点
-        const pts = cellsInRow.flatMap(cell => cell.quad);
+        const pts = cellsInRow.reduce((arr, c: CellColorResult) => {
+          arr.push(...c.quad);
+          return arr;
+        }, [] as { x: number; y: number }[]);
         if (pts.length < 3) continue;
         const hull = convexHull(pts);
 
@@ -207,7 +214,7 @@ export class VisionApp {
 
         // 标签
         const { x, y } = hull[0];
-        ctx.fillText(color, x + 4, y + 4);
+        ctx.fillText(label, x + 4, y + 4);
       }
     }
   }

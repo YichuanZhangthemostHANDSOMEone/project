@@ -1,5 +1,6 @@
 // src/index.ts
 import { VisionApp } from '@modules/vision';
+import { loadColorMap } from '@modules/colorMap';
 import './styles.css';
 import { bindButton, showMessage, showProcessingSpinner } from '@modules/ui';
 
@@ -16,6 +17,7 @@ window.addEventListener('DOMContentLoaded', async () => {
   const DEBUG = true;
 
   try {
+    await loadColorMap();
     await app.start();
     showMessage('Camera ready. Click capture to analyze.');
   } catch (error) {

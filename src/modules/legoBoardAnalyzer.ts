@@ -4,6 +4,7 @@ import cv from '@techstark/opencv-js';
 import Color from 'colorjs.io';
 import { LegoSegmenter } from '@modules/segmentation';
 import { legoColors, LegoColor } from '@modules/legoColors';
+import { colorToProtoComp } from '@modules/colorMap';
 
 /** Result of color detection for a single grid cell */
 export interface CellColorResult {
@@ -13,6 +14,10 @@ export interface CellColorResult {
   col: number;
   /** Detected LEGO color name */
   color: string;
+  /** Protocol this color represents */
+  protocol: string;
+  /** Component name within the protocol */
+  component: string;
   /** Four corner points of the cell on the original image */
   quad: Array<{ x: number; y: number }>;
 }
@@ -227,7 +232,15 @@ export class LegoBoardAnalyzer {
 
         // Map valid cell back to original coordinates
         const quad = this.mapCellQuad(x, y, w, h, MInv);
-        results.push({ row: r, col: c, color: name, quad });
+        const mapped = colorToProtoComp[name] || { protocol: '', component: '' };
+        results.push({
+          row: r,
+          col: c,
+          color: name,
+          protocol: mapped.protocol,
+          component: mapped.component,
+          quad,
+        });
       }
     }
     console.log('[LBA] 检测结束，结果数量 =', results.length);
