@@ -1,0 +1,53 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Register | Lego Network Analyzer</title>
+
+</head>
+<body class="auth-page">
+
+<main class="auth-container">
+  <div class="auth-card register-card">
+    <h1>Create account</h1>
+    <p>Let’s get you started!</p>
+
+    <form id="registerForm">
+      <input type="text" id="nameInput" placeholder="Name" required/>
+      <input type="email" id="emailInput" placeholder="Email" required/>
+      <input type="password" id="passwordInput" placeholder="Password" required/>
+      <select id="roleSelect">
+        <option value="student">Student</option>
+        <option value="teacher">Teacher</option>
+      </select>
+      <button type="submit" class="btn-primary">Register</button>
+    </form>
+
+    <p class="switch-text">
+      Existing account? <a href="/login.html">Login</a>
+    </p>
+
+    <div class="register-foot">
+      <div class="foot-item">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="#10b981">
+          <path d="M9 12l2 2 4-4"/>
+        </svg>
+        <span>Secure Sign-up</span>
+      </div>
+      <div class="foot-item">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="#3b82f6">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="12" y1="8" x2="12" y2="12"/>
+          <line x1="12" y1="16" x2="12.01" y2="16"/>
+        </svg>
+        <span>Privacy Assured</span>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script src="/register.bundle.js" defer></script>
+</body>
+</html>

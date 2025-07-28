@@ -1,0 +1,120 @@
+
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Student Details | StudyTrack</title>
+
+</head>
+<body>
+<div class="container">
+  <!-- 侧边栏 -->
+  <aside class="sidebar">
+    <div class="logo">
+      <svg viewBox="0 0 24 24" width="24" height="24" fill="#4f46e5">
+        <path d="M3 4v16h18V4H3zm16 14H5V6h14v12z"/>
+        <path d="M7 8h10v2H7V8zm0 4h10v2H7v-2z"/>
+      </svg>
+      <span>StudyTrack</span>
+    </div>
+    <nav class="nav-menu">
+      <ul>
+        <li><a href="teacher_list.html">Students</a></li>
+        <li class="active"><a href="#">My Profile</a></li>
+        <li><a href="#">Settings</a></li>
+        <li><a id="logoutBtn" href="#">Logout</a></li>
+      </ul>
+    </nav>
+  </aside>
+
+  <!-- 主区域 -->
+  <main class="main-content">
+    <!-- 顶栏 -->
+    <header class="page-header">
+      <div class="profile-title">
+        <h1 id="studentName">—</h1>
+        <p id="studentClass">—</p>
+      </div>
+      <div class="header-actions">
+        <select id="weekSelector" class="select-week">
+          <option value="all">All Weeks</option>
+        </select>
+      </div>
+    </header>
+
+    <!-- 概览卡片 -->
+    <section class="overview-panel">
+      <div class="card profile-card">
+        <div class="avatar">
+          <svg viewBox="0 0 24 24" width="48" height="48" fill="#6366f1">
+            <circle cx="12" cy="8" r="4"/>
+            <path d="M6 20v-2c0-2.21 1.79-4 4-4h0c2.21 0 4 1.79 4 4v2"/>
+          </svg>
+        </div>
+        <div class="info">
+          <h2 id="studentName2">—</h2>
+          <p id="studentRole">Student</p>
+        </div>
+        <div class="stats">
+          <div class="mini-card">
+            <h3>Average Score</h3>
+            <p id="avgAccuracy">0%</p>
+            <span id="accuracyTrend" class="trend up">+0%</span>
+          </div>
+          <div class="mini-card">
+            <h3>Total Attempts</h3>
+            <p id="totalAttempts">0</p>
+          </div>
+          <div class="mini-card">
+            <h3>Weekly Progress</h3>
+            <p id="weeklyProgress">+0%</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 图表区 -->
+    <section class="charts-section">
+      <div class="card chart-card chart-wide">
+        <h3>Accuracy (%)</h3>
+        <canvas id="accuracyChart"></canvas>
+      </div>
+      <div class="card chart-card chart-wide">
+        <h3>Average Spending Time (s)</h3>
+        <canvas id="timeChart"></canvas>
+      </div>
+      <div class="card chart-card chart-full">
+        <h3>Efficiency comparison</h3>
+        <canvas id="efficiencyChart"></canvas>
+      </div>
+    </section>
+
+    <!-- 日历 & 活跃度（饼图） -->
+    <section class="lower-section">
+      <div class="card calendar-card">
+        <h3>Calendar</h3>
+        <table class="calendar-table" id="calendarTable"></table>
+      </div>
+      <div class="card activity-card">
+        <h3>Activity statistics (by week)</h3>
+        <canvas id="activityChart"></canvas>
+      </div>
+    </section>
+
+    <!-- 排行榜 -->
+    <section class="leaderboard-card card">
+      <h3>Weekly Theme Ranking List</h3>
+      <table class="leaderboard-table">
+        <thead>
+        <tr><th>Rank</th><th>Student</th><th>Score</th></tr>
+        </thead>
+        <tbody id="leaderboardBody"></tbody>
+      </table>
+    </section>
+  </main>
+</div>
+
+<script src="/teacher_record.bundle.js" defer></script>
+</body>
+</html>
