@@ -500,6 +500,7 @@ document.addEventListener('DOMContentLoaded', () => {
     totalEl.textContent = String(filteredQuizzes.length)
 
     const weeks = Array.from(new Set(filteredQuizzes.map(q=>q.week))).sort((a,b)=>a-b)
+    // @ts-ignore
     const last = weeks.at(-1)!, prev = weeks.length>1?weeks.at(-2)!:last
     const diff = average(filteredQuizzes.filter(q=>q.week===last).map(q=>q.accuracy))
         - average(filteredQuizzes.filter(q=>q.week===prev).map(q=>q.accuracy))
