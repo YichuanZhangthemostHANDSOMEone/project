@@ -39,8 +39,7 @@ export class LegoBoardAnalyzer {
 
   /**
    * Analyze the provided canvas and return detected colors for
-   * each grid cell. The original canvas will be annotated with
-   * cell outlines and color labels.
+   * each grid cell. No drawing is performed.
    */
   async analyze(canvas: HTMLCanvasElement): Promise<CellColorResult[]> {
     console.log('[LBA] 🚀 analyze() start', {
@@ -250,13 +249,8 @@ export class LegoBoardAnalyzer {
     M.delete();
     MInv.delete();
 
-    // 5) Draw results back onto original canvas
-    this.drawResults(canvas, results);
-    console.log('[LBA] drawResults 完成');
-
     return results;
   }
-
   /**
    * Convert approx contour to ordered quad [tl,tr,br,bl]
    */
@@ -302,35 +296,12 @@ export class LegoBoardAnalyzer {
     return quad;
   }
 
-  /** Draw polygons and color labels on the canvas */
-  private drawResults(canvas: HTMLCanvasElement, cells: CellColorResult[]): void {
-    const ctx = canvas.getContext('2d')!;
-    ctx.lineWidth = 1;
-    ctx.font = '10px sans-serif';
-    ctx.textBaseline = 'top';
-
-    cells.forEach(cell => {
-      ctx.beginPath();
-      ctx.moveTo(cell.quad[0].x, cell.quad[0].y);
-      for (let i = 1; i < 4; i++) {
-        ctx.lineTo(cell.quad[i].x, cell.quad[i].y);
-      }
-      ctx.closePath();
-      ctx.strokeStyle = '#ff0000';
-      ctx.stroke();
-
-      // Draw color label at first corner
-      ctx.fillStyle = '#ff0000';
-      ctx.fillText(cell.color, cell.quad[0].x, cell.quad[0].y);
-    });
-  }
-
   /**
    * Match a Lab color (OpenCV range 0-255) to the closest LEGO color and
    * return the deltaE distance. This is used for filtering out background
    * or poorly detected bricks.
    */
-  private matchColorWithDE(lab: [number, number, number]): {
+  private matchColorWithDE(lab: [number, number, number]): { 
     name: string; deltaE: number;
   } {
     // Convert from OpenCV Lab (0-255) to standard Lab range.
