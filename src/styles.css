@@ -150,14 +150,28 @@ a {
 }
 
 /* ========== 扫描 & 结果区 ========== */
+/*.screen-title {*/
+/*  font-size: 28px;*/
+/*  font-weight: 600;*/
+/*}*/
+/*.screen-desc {*/
+/*  margin-top: 4px;*/
+/*  font-size: 16px;*/
+/*  color: var(--gray-500);*/
+/*}*/
 .screen-title {
+  display: inline-flex;       /* 让 icon 和文字在一行 */
+  align-items: center;        /* 垂直居中 */
+  gap: 8px;                   /* icon 与文字之间的间距 */
   font-size: 28px;
   font-weight: 600;
 }
-.screen-desc {
-  margin-top: 4px;
-  font-size: 16px;
-  color: var(--gray-500);
+
+.screen-icon {
+  width: 1.2em;               /* 根据文字大小自动缩放 */
+  height: 1.2em;
+  flex-shrink: 0;             /* 防止在容器压缩时被挤小 */
+  stroke: var(--primary);     /* 或者用 currentColor */
 }
 .cards {
   display: flex;
