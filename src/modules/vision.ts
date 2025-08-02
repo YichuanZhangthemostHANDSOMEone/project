@@ -51,13 +51,14 @@ export class VisionApp {
   private draw(cells: CellColorResult[]) {
     const ctx = this.overlay.getContext('2d')!;
 
-    // 1) DPI & canvas 同步
-    const { width: dispW, height: dispH } = this.overlay.getBoundingClientRect();
-    const dpr = window.devicePixelRatio || 1;
-    this.overlay.width = Math.round(dispW * dpr);
-    this.overlay.height = Math.round(dispH * dpr);
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    ctx.clearRect(0, 0, dispW, dispH);
+    // 1) 使用捕获尺寸同步 canvas
+    this.overlay.width = this.capture.width;
+    this.overlay.height = this.capture.height;
+    // 保证 overlay 的 CSS 尺寸与视频一致
+    this.overlay.style.width = `${this.video.clientWidth}px`;
+    this.overlay.style.height = `${this.video.clientHeight}px`;
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.clearRect(0, 0, this.capture.width, this.capture.height);
 
     // 2) 绘制单个格子轮廓和颜色标签
     ctx.lineWidth = 1;
