@@ -59,12 +59,29 @@ export class VisionApp {
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx.clearRect(0, 0, dispW, dispH);
 
-    // 2) 颜色映射
+    // 2) 绘制单个格子轮廓和颜色标签
+    ctx.lineWidth = 1;
+    ctx.font = '10px sans-serif';
+    ctx.textBaseline = 'top';
+    ctx.strokeStyle = '#ff0000';
+    ctx.fillStyle = '#ff0000';
+    for (const cell of cells) {
+      ctx.beginPath();
+      ctx.moveTo(cell.quad[0].x, cell.quad[0].y);
+      for (let i = 1; i < 4; i++) {
+        ctx.lineTo(cell.quad[i].x, cell.quad[i].y);
+      }
+      ctx.closePath();
+      ctx.stroke();
+      ctx.fillText(cell.color, cell.quad[0].x, cell.quad[0].y);
+    }
+
+    // 3) 颜色映射
     const colorMap = new Map<string, string>(
         legoColors.map(c => [c.name, `rgb(${c.rgb[0]}, ${c.rgb[1]}, ${c.rgb[2]})`])
     );
 
-    // 3) 按 protocol+component + row 分组
+    // 4) 按 protocol+component + row 分组
     const grouped = new Map<string, Map<number, CellColorResult[]>>();
     for (const cell of cells) {
       const label = `${cell.protocol} · ${cell.component}`;
@@ -78,7 +95,7 @@ export class VisionApp {
       byRow.set(cell.row, rowList);
     }
 
-    // 4) 绘制各组凸包
+    // 5) 绘制各组凸包
     ctx.lineWidth = 2;
     ctx.font = '12px sans-serif';
     ctx.fillStyle = '#fff';
