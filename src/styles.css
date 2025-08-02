@@ -197,8 +197,8 @@ a {
 /* ========== AR 区 ========== */
 .ar-container {
   position: relative;
-  width: 100%;
-  padding-top: 75%;
+  width: 640px;   /* 固定像素宽度 */
+  height: 480px;  /* 固定像素高度，和摄像头/画布分辨率一致 */
   background: var(--border);
   border-radius: 12px;
   overflow: hidden;
@@ -207,9 +207,11 @@ a {
 .overlay-canvas {
   position: absolute;
   top: 0; left: 0;
-  width: 100%; height: 100%;
-  object-fit: cover;
+  width: 640px;   /* 必须和 .ar-container 一致 */
+  height: 480px;
+  object-fit: contain; /* 用 contain 保证不被裁切 */
 }
+
 .step-indicator {
   position: absolute;
   top: 12px; left: 12px;
