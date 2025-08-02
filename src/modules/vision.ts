@@ -23,6 +23,31 @@ export class VisionApp {
     showLoadingIndicator(true);
     await this.camera.start();
     showLoadingIndicator(false);
+
+    // ⚠️ overlay 与 capture 必须和摄像头分辨率完全一致，
+    // 不能依赖 CSS 的缩放，否则像素坐标会错位。
+    const w = this.video.videoWidth;
+    const h = this.video.videoHeight;
+
+    // 同步三者的实际像素尺寸
+    this.capture.width = w;
+    this.capture.height = h;
+    this.overlay.width = w;
+    this.overlay.height = h;
+
+    // 为防止被 100% 等 CSS 拉伸，显式设置 inline style
+    [this.video, this.overlay, this.capture].forEach(el => {
+      el.style.width = `${w}px`;
+      el.style.height = `${h}px`;
+    });
+
+    // 容器本身也要固定为相同尺寸，并移除 padding 比例
+    const container = this.overlay.parentElement as HTMLElement | null;
+    if (container) {
+      container.style.width = `${w}px`;
+      container.style.height = `${h}px`;
+      container.style.padding = '0';
+    }
   }
 
   async analyze(): Promise<CellColorResult[]> {
