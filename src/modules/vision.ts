@@ -191,9 +191,17 @@ export class VisionApp {
     this.overlay.height = Math.round(dispH * dpr);
     this.overlay.style.width = dispW + 'px';
     this.overlay.style.height = dispH + 'px';
-    // [4] 设置坐标缩放
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    ctx.clearRect(0, 0, dispW, dispH);
+
+    // [4] 根据 capture 的原始分辨率与展示尺寸，计算缩放因子
+    const srcW = this.capture.width || dispW;
+    const srcH = this.capture.height || dispH;
+    const scaleX = srcW ? (dispW / srcW) : 1;
+    const scaleY = srcH ? (dispH / srcH) : 1;
+
+    // [5] 清空画布并设置新的坐标系
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.clearRect(0, 0, this.overlay.width, this.overlay.height);
+    ctx.setTransform(scaleX * dpr, 0, 0, scaleY * dpr, 0, 0);
 
     // === 以下为你原有的绘制内容，直接保留 ===
     const colorMap = new Map<string, string>(
@@ -212,8 +220,10 @@ export class VisionApp {
       byColor.set(cell.color, colorList);
     }
 
-    ctx.lineWidth = 2;
-    ctx.font = '12px sans-serif';
+    const invScaleForStroke = scaleX && scaleY ? 1 / Math.max(scaleX, scaleY) : 1;
+    const invScaleForFont = scaleY ? 1 / scaleY : 1;
+    ctx.lineWidth = 2 * invScaleForStroke;
+    ctx.font = `${12 * invScaleForFont}px sans-serif`;
     ctx.fillStyle = '#fff';
 
     for (const [row, colorGroups] of grouped) {
