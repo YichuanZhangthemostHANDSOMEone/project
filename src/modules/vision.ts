@@ -186,6 +186,7 @@ export class VisionApp {
     const videoRect = this.video.getBoundingClientRect();
     const dpr = window.devicePixelRatio || 1;
 
+
     // overlay 的 CSS 尺寸要和视频保持一致
     const dispW = videoRect.width || overlayRect.width;
     const dispH = videoRect.height || overlayRect.height;
