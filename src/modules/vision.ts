@@ -182,18 +182,40 @@ export class VisionApp {
    */
   private draw(cells: CellColorResult[]) {
     const ctx = this.overlay.getContext('2d')!;
-    // [1] 获取 overlay 在页面实际显示的 CSS 尺寸
-    const {width: dispW, height: dispH} = this.overlay.getBoundingClientRect();
-    // [2] 获取 dpr
+    const overlayRect = this.overlay.getBoundingClientRect();
+    const videoRect = this.video.getBoundingClientRect();
     const dpr = window.devicePixelRatio || 1;
-    // [3] 设置 overlay 的物理像素尺寸，和显示一致
-    this.overlay.width = Math.round(dispW * dpr);
-    this.overlay.height = Math.round(dispH * dpr);
-    this.overlay.style.width = dispW + 'px';
-    this.overlay.style.height = dispH + 'px';
-    // [4] 设置坐标缩放
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    ctx.clearRect(0, 0, dispW, dispH);
+
+    // overlay 的 CSS 尺寸要和视频保持一致
+    const dispW = videoRect.width || overlayRect.width;
+    const dispH = videoRect.height || overlayRect.height;
+    if (!dispW || !dispH) {
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.clearRect(0, 0, this.overlay.width, this.overlay.height);
+      return;
+    }
+
+    this.overlay.style.width = `${dispW}px`;
+    this.overlay.style.height = `${dispH}px`;
+
+    // 物理像素尺寸按照 dpr 放大，保证绘制清晰
+    const physicalW = Math.max(1, Math.round((dispW || 0) * dpr));
+    const physicalH = Math.max(1, Math.round((dispH || 0) * dpr));
+    if (this.overlay.width !== physicalW) this.overlay.width = physicalW;
+    if (this.overlay.height !== physicalH) this.overlay.height = physicalH;
+
+    // 映射关系：capture -> 视频显示尺寸
+    const srcW = this.capture.width || dispW;
+    const srcH = this.capture.height || dispH;
+    const scaleX = srcW ? (dispW / srcW) : 1;
+    const scaleY = srcH ? (dispH / srcH) : 1;
+
+    // 先清空画布，再设置新的坐标系（包含 dpr + 缩放 + 位置校正）
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.clearRect(0, 0, this.overlay.width, this.overlay.height);
+    const translateX = (overlayRect.left - videoRect.left) * dpr;
+    const translateY = (overlayRect.top - videoRect.top) * dpr;
+    ctx.setTransform(scaleX * dpr, 0, 0, scaleY * dpr, translateX, translateY);
 
     // === 以下为你原有的绘制内容，直接保留 ===
     const colorMap = new Map<string, string>(
@@ -212,9 +234,13 @@ export class VisionApp {
       byColor.set(cell.color, colorList);
     }
 
-    ctx.lineWidth = 2;
-    ctx.font = '12px sans-serif';
+    const strokeScale = Math.max(scaleX, scaleY) * dpr || 1;
+    const fontScale = (scaleY || 1) * dpr;
+    ctx.lineWidth = 2 / strokeScale;
+    ctx.font = `${12 / fontScale}px sans-serif`;
     ctx.fillStyle = '#fff';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
 
     for (const [row, colorGroups] of grouped) {
       for (const [color, cellsInGroup] of colorGroups) {
@@ -249,16 +275,7 @@ export class VisionApp {
         
         // 获取文本尺寸以便居中显示
         const text = `${cellsInGroup[0].component}`;
-        const textMetrics = ctx.measureText(text);
-        const textWidth = textMetrics.width;
-        const textHeight = 4; // 字体大小
-        
-        // 将文本绘制在边界框中心
-        ctx.fillText(
-          text,
-          centerX - textWidth / 2,
-          centerY + textHeight / 2
-        );
+        ctx.fillText(text, centerX, centerY);
       }
     }
   }
